@@ -2,6 +2,8 @@ import React, {useState, useEffect} from "react";
 import "./SelectPage.css";
 import {fetchFamily} from "../modules/fetch";
 import FamilyCard from "../components/selectPage/FamilyCard";
+import {Link} from "react-router-dom";
+import {logout, getUserData, isLogin} from "../modules/AuthService";
 
 function SelectPage() {
   // const [tokens, setTokens] = useState(["FFmZb", "Fglf1"]);
@@ -69,12 +71,16 @@ function SelectPage() {
           <h1 className="text-white">Loading</h1>
         ) : (
           families.map((family, index) => (
-            <div className="mx-4 p-4 rounded-md _hover" key={index}>
+            <Link
+              to={`/${family.platform.toLowerCase()}/${family.token}`}
+              className="mx-4 p-4 rounded-md _hover"
+              key={index}
+            >
               <FamilyCard
                 familyPlatform={family.platform}
                 familyName={family.familyName}
               />
-            </div>
+            </Link>
           ))
         )}
         <div
@@ -105,17 +111,17 @@ function SelectPage() {
     </div>
   );
   const addFamily = (
-    <div className="h-screen flex flex-wrap justify-center items-center flex-col">
-      <div className="inline-flex h-12">
+    <div className="h-screen w-96 flex flex-wrap justify-center items-center flex-col">
+      <div className="flex h-12">
         <input
-          className="p-2 h-12 w-52 text-center rounded-md"
+          className="p-2 h-12 w-2/3 text-center rounded-md"
           placeholder="กรุณาใส่ Token"
           onChange={e => {
             setTokenInput(e.target.value);
           }}
         />
         <button
-          className="w-full pl-3"
+          className="w-1/3 pl-3"
           onClick={() =>
             tokenInput.length === 5
               ? addToken()
@@ -138,7 +144,9 @@ function SelectPage() {
           </svg>
         </button>
       </div>
-      <div className="text-white">{msgAddPage}</div>
+      <div className="text-white w-full text-left text-xl p-1 my-2">
+        {msgAddPage}
+      </div>
     </div>
   );
   return (
@@ -147,7 +155,7 @@ function SelectPage() {
       <div className="text-white text-xl py-6 px-10 w-full items-center absolute">
         {isClickAddfamily ? (
           <h1
-            className="text-left"
+            className="text-left cursor-pointer hover:text-gray-300"
             onClick={() => {
               setClickAddfamily(false);
               setMsgAddPage("");
@@ -155,8 +163,16 @@ function SelectPage() {
           >
             ย้อนกลับ
           </h1>
+        ) : isLogin() ? (
+          <h1 className="text-right cursor-pointer hover:text-gray-300">
+            {getUserData().username}
+          </h1>
         ) : (
-          <h1 className="text-right">เข้าสู่ระบบ</h1>
+          <Link to="/login">
+            <h1 className="text-right cursor-pointer hover:text-gray-300">
+              เข้าสู่ระบบ
+            </h1>
+          </Link>
         )}
       </div>
       <div className="h-full w-full flex flex-wrap justify-center items-center">

@@ -4,7 +4,7 @@ import sf_logo from "../../assets/logo/spotify_logo.png";
 
 function FamilyCard({familyPlatform, familyName}) {
   const getLogo = () => {
-    if (familyPlatform === "Spotify") {
+    if (familyPlatform.toLowerCase() === "spotify") {
       return sf_logo;
     } else {
       return yt_logo;

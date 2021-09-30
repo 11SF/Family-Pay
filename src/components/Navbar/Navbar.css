@@ -1,0 +1,77 @@
+@media screen and (max-width: 500px) {
+    .header_btn {
+        display: none;
+    }
+}
+@media screen and (min-width: 501px) {
+    .hamberger {
+        display: none;
+    }
+}
+.header {
+    display: block;
+    width: 100%;
+    user-select: none;
+}
+.item {
+    background-color: #1DB954;
+}
+.header_wrap {
+    margin: 0 auto;
+    padding: 0 5%;
+    height: 77px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 10;
+}
+p {
+    font-size: 24px;
+    font-weight: 500;
+    color: #ffffff;
+    transition: 0.5s;
+
+}
+.header_btn {
+    cursor: pointer;
+    transition: 0.5s;
+}
+.header_btn p:hover {
+    color: #121212;
+    /* border-bottom: #121212 solid 1px; */
+
+}
+.logo#nav_logo {
+    cursor: default;
+    pointer-events: none;
+ 
+}
+
+.top_wave {
+    background-image: url('../../assets/wave.svg');
+    background-position: center;
+    background-repeat: space;
+    background-size:cover;
+    height: 400px; 
+    margin-top: -100px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.dropMenu {
+    width: 100%;
+    position: relative;
+    text-align: center;
+}
+.menu_item {
+    /* height: 30px; */
+    border-bottom: #ffffff solid 2px;
+    background-color: #121212;
+    padding: 10px 0;
+    font-size: 20px;
+    color: #f4f4f4;
+}
+.menu_item:hover {
+    background-color: #3b3b3b;
+}

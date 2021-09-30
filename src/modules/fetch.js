@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = "http://localhost:5000/api/v2";
-const fetchFamily = async (token, hostEmail) => {
+const fetchFamily = async token => {
   // let payload = {
   //   token,
   //   hostEmail,
@@ -11,6 +11,13 @@ const fetchFamily = async (token, hostEmail) => {
     return result.data;
   }
 };
+const fetchFamilyByEmail = async hostEmail => {
+  let result = await axios.get(
+    BASE_URL + "/member/get/family?hostEmail=" + hostEmail
+  );
+  if (result.status) {
+    return result.data;
+  }
+};
 
-export {fetchFamily};
-
+export {fetchFamily, fetchFamilyByEmail};
