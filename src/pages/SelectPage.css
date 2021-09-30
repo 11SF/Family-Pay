@@ -1,0 +1,8 @@
+.img-select {
+    /* background-image: url('../assets/logo/spotify_logo.png'); */
+    background-position: center;
+    background-size: cover;
+}
+._hover:hover {
+    background-color: #f4f4f420;
+}
