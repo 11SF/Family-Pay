@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./SelectPage.css";
-import {fetchFamily} from "../modules/fetch";
+import { fetchFamily } from "../modules/AdminService";
 import FamilyCard from "../components/selectPage/FamilyCard";
-import {Link} from "react-router-dom";
-import {logout, getUserData, isLogin} from "../modules/AuthService";
+import { Link } from "react-router-dom";
+import { logout, getUserData, isLogin } from "../modules/AuthService";
 
 function SelectPage() {
   // const [tokens, setTokens] = useState(["FFmZb", "Fglf1"]);
@@ -24,11 +24,11 @@ function SelectPage() {
     setLoading(true);
     if (tokens) {
       let result = await Promise.all(
-        tokens.map(token => {
+        tokens.map((token) => {
           return fetchFamily(token);
         })
       );
-      result = result.filter(value => value._id);
+      result = result.filter((value) => value._id);
       setFamilies(result);
     }
     setLoading(false);
@@ -38,7 +38,7 @@ function SelectPage() {
     let token = tokens;
     let checkDup = [];
     if (tokens) {
-      checkDup = tokens.filter(value => value === tokenInput);
+      checkDup = tokens.filter((value) => value === tokenInput);
     } else {
       token = [];
     }
@@ -116,7 +116,7 @@ function SelectPage() {
         <input
           className="p-2 h-12 w-2/3 text-center rounded-md"
           placeholder="กรุณาใส่ Token"
-          onChange={e => {
+          onChange={(e) => {
             setTokenInput(e.target.value);
           }}
         />
@@ -164,9 +164,11 @@ function SelectPage() {
             ย้อนกลับ
           </h1>
         ) : isLogin() ? (
-          <h1 className="text-right cursor-pointer hover:text-gray-300">
-            {getUserData().username}
-          </h1>
+          <Link to="/admin/selectfamily">
+            <h1 className="text-right cursor-pointer hover:text-gray-300">
+              {getUserData().username}
+            </h1>
+          </Link>
         ) : (
           <Link to="/login">
             <h1 className="text-right cursor-pointer hover:text-gray-300">

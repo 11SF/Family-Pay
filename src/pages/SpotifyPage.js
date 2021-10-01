@@ -6,7 +6,7 @@ import Payment from "../components/Payment/Payment";
 
 import loading_icon from "../assets/bars.svg";
 import {useParams} from "react-router";
-import { fetchFamily } from "../modules/fetch";
+import { fetchFamily } from "../modules/AdminService";
 
 export default function SpotifyPage({user}) {
   const [memberData, setMemberData] = useState([]);

@@ -31,4 +31,10 @@ function isLogin() {
   }
 }
 
-export {goLogin, logout, getUserData, isLogin};
+function getHeaderAuth() {
+  return {
+    Authorization: "Bearer " + sessionStorage.getItem("userToken"),
+  }
+}
+
+export {goLogin, logout, getUserData, isLogin, getHeaderAuth};
