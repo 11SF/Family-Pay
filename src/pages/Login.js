@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Link, Redirect, useHistory} from "react-router-dom";
+import {Link, Router, useHistory} from "react-router-dom";
 import {goLogin, isLogin} from "../modules/AuthService";
 
 import "./Login.css";
@@ -8,6 +8,7 @@ function Login() {
   const [password, setPassword] = useState(null);
   const [isBlack, setIsBlank] = useState(false);
   const [valid, setValid] = useState(true);
+  const history = useHistory();
   // const [data, setData] = useState(null);
 
   const handleEmail = e => {
@@ -26,17 +27,20 @@ function Login() {
   //         // loginWithEmail(email,password);
   //     }
   // }
-  function handleSubmit(e) {
-
-
+  async function handleSubmit(e) {
     if (!email || !password) {
       setIsBlank(true);
     } else {
       e.preventDefault();
-      goLogin(email, password);
+      let res = await goLogin(email, password);
+      if (res) {
+        // console.log("pass");
+        // history.push("/admin/selectfamily");
+        history.push("/admin/selectfamily");
+      }
       // let login = goLogin(email, password);
       // if(login) {
-        
+
       // }
       //    loginWithEmail(email,password)
       // loginWithEmail(email,password);
@@ -91,9 +95,11 @@ function Login() {
               ></input>
             </div>
             {isBlack ? <div>กรุณากรอกข้อมูลให้ครบถ้วน</div> : ""}
-            <button className="login_btn" onClick={handleSubmit}>
-              เข้าสู่ระบบ
-            </button>
+            {/* <Router> */}
+              <button className="login_btn" onClick={handleSubmit}>
+                เข้าสู่ระบบ
+              </button>
+            {/* </Router> */}
           </form>
         </div>
       </div>

@@ -1,25 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import HomeAdmin from "../components/Admin/HomeAdmin";
-import { getUserData } from "../modules/AuthService";
-import { fetchFamilyByEmail } from "../modules/AdminService";
-import { useHistory } from "react-router-dom";
+import {getUserData} from "../modules/AuthService";
+import {fetchFamilyByEmail, getTokenByEmail} from "../modules/AdminService";
+import {useHistory} from "react-router-dom";
 import {useParams} from "react-router";
-// import Swal from "sweetalert2";
+
 const menuList = ["หน้าแรก", "รายชื่อสมาชิก", "ข้อมูลครอบครัว", "ข้อมูลราคา"];
 
 function AdminPage() {
   const [menuIndex, setMenuIndex] = useState(0);
-  const history = useHistory();
+  const [familyData, setFamilyData] = useState(null);
+  const [isLoading, setLoading] = useState(true);
   const {token} = useParams();
-  // const [familySelect, setFamilySelect] = useState("");
-  // const [family, setFamily] = useState([]);
+
+  const fetchData = async () => {
+    let result = await getTokenByEmail(token);
+    if (result.status) {
+      return setFamilyData(result.data);
+    }
+    setFamilyData(null);
+  };
+  useEffect(() => {
+    // setLoading(true);
+    fetchData();
+  }, []);
 
   useEffect(() => {
-    // fetchData();
-    // if (!token) {
-    //   history.push("/admin/selectfamily");
-    // }
-  }, []);
+    if (familyData != null) {
+      setLoading(false);
+      console.log(familyData);
+    }
+  }, [familyData]);
 
   function getPage() {
     switch (menuIndex) {
@@ -31,7 +42,7 @@ function AdminPage() {
         return "3";
 
       default:
-        return <HomeAdmin />;
+        return <HomeAdmin familyData={familyData} />;
     }
   }
   // async function fetchData() {
@@ -69,7 +80,8 @@ function AdminPage() {
           </p>
         </div>
       </header>
-      <main>{getPage()}</main>
+      <main>{isLoading ? <h1>Loading</h1> : getPage()}</main>
+      {/* <main>{getPage()}</main> */}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-main .container#spotify {
+main .container {
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
@@ -6,16 +6,16 @@ main .container#spotify {
     justify-content: center;
 
 }
-.card#spotify {
+.card {
     margin: 41.5px 65px;
 }
 
-.loading#spotify {
+.loading {
     max-width: 600px;
 }
-.bottom_wave#spotify {
+.bottom_wave {
     /* background-image: url('../assets/wave\ \(1\).svg'); */
-    background-image: url('../assets/wave\ \(1\).svg');
+    background-image: url('../assets/wave_red_b.svg');
     
     background-position: center;
     background-repeat: space;
@@ -26,7 +26,7 @@ main .container#spotify {
     pointer-events: none;
 }
 
-.footer#spotify {
+.footer {
     background-color: #121212;
     height: 86px;
     color: white;

@@ -34,7 +34,7 @@ function AdminSelectPage() {
         ) : (
           families.map((family, index) => (
             <Link
-              to={`/${family.platform.toLowerCase()}/${family.token}`}
+              to={`/admin/managefamily/${family.token}`}
               className="mx-4 p-4 rounded-md _hover"
               key={index}
             >

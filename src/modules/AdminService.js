@@ -22,7 +22,6 @@ const fetchFamilyByEmail = async (hostEmail) => {
 };
 
 const createFamily = async (familyName, platform) => {
-  console.log(getHeaderAuth());
   let result = await axios.post(
     BASE_URL + "/admin/family/create",
     {
@@ -38,4 +37,19 @@ const createFamily = async (familyName, platform) => {
   return result.data;
 };
 
-export { fetchFamily, fetchFamilyByEmail, createFamily };
+const getTokenByEmail = async (token) => {
+  let result = await fetchFamily(token)
+
+  if(result.hostEmail !== getUserData().sub) {
+    return {
+      status : false,
+      msg: "ไม่สามารถเข้าถึงได้"
+    }
+  }
+  return {
+    status : true,
+    data: result
+  }
+}
+
+export { fetchFamily, fetchFamilyByEmail, createFamily, getTokenByEmail };

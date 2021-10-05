@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
-import "./SpotifyPage.css";
-import Header from "../components/Navbar/Navbar";
+import "./YoutubePage.css";
+import Header from "../components/Navbar/NavbarYoutube";
 import Card from "../components/Card/Card";
 import Payment from "../components/Payment/Payment";
 // import axios from "axios";
@@ -9,7 +9,7 @@ import loading_icon from "../assets/bars.svg";
 import {useParams} from "react-router";
 import {fetchFamily} from "../modules/AdminService";
 
-export default function SpotifyPage({user}) {
+export default function YoutubeyPage({user}) {
   // const BASE_URL = "http://localhost:5000/api/v2";
   const [memberData, setMemberData] = useState([]);
   const [familyData, setFamilyData] = useState("");
@@ -38,12 +38,11 @@ export default function SpotifyPage({user}) {
     <div>
       <Header familyName={familyData.familyName} />
       <main>
-        <div className="container" id="spotify">
+        <div className="container">
           {loading ? (
             <img
               data-aos="fade-down"
               className="loading"
-              id="spotify"
               src={loading_icon}
               alt="loading_bar"
               style={{maxWidth: "200px", margin: "50px 0 300px 0"}}
@@ -64,7 +63,7 @@ export default function SpotifyPage({user}) {
             <h1>ไม่มีสมาชิก</h1>
           )}
         </div>
-        <div className="bottom_wave" id="spotify" data-aos="slide-up"></div>
+        <div className="bottom_wave" data-aos="slide-up"></div>
         {/* <Payment /> */}
       </main>
       <footer className="footer">11SF</footer>

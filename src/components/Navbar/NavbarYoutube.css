@@ -48,8 +48,8 @@ p {
  
 }
 
-.top_wave#spotify {
-    background-image: url('../../assets/wave.svg');
+.top_wave {
+    background-image: url('../../assets/wave\ _red_t.svg');
     background-position: center;
     background-repeat: space;
     background-size:cover;
