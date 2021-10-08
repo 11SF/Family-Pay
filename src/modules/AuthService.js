@@ -1,6 +1,6 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-const BASE_URL = "http://localhost:5000/api/auth";
+const BASE_URL = "https://mysitebackend.herokuapp.com/api/auth";
 
 async function goLogin(username, password) {
   let res = await axios.post(BASE_URL + "/login", {

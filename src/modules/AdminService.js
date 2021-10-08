@@ -1,7 +1,7 @@
 import axios from "axios";
 import {getHeaderAuth, getUserData} from "./AuthService";
 
-const BASE_URL = "http://localhost:5000/api/v2";
+const BASE_URL = "https://mysitebackend.herokuapp.com/api/v2";
 const fetchFamily = async token => {
   // let payload = {
   //   token,
