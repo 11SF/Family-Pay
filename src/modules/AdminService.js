@@ -1,8 +1,8 @@
 import axios from "axios";
-import { getHeaderAuth, getUserData } from "./AuthService";
+import {getHeaderAuth, getUserData} from "./AuthService";
 
 const BASE_URL = "http://localhost:5000/api/v2";
-const fetchFamily = async (token) => {
+const fetchFamily = async token => {
   // let payload = {
   //   token,
   //   hostEmail,
@@ -12,7 +12,7 @@ const fetchFamily = async (token) => {
     return result.data;
   }
 };
-const fetchFamilyByEmail = async (hostEmail) => {
+const fetchFamilyByEmail = async hostEmail => {
   let result = await axios.get(
     BASE_URL + "/member/get/family?hostEmail=" + hostEmail
   );
@@ -21,35 +21,117 @@ const fetchFamilyByEmail = async (hostEmail) => {
   }
 };
 
-const createFamily = async (familyName, platform) => {
+const createFamily = async (familyName, platform, dueDate, ppNumber) => {
   let result = await axios.post(
     BASE_URL + "/admin/family/create",
     {
       hostEmail: getUserData().sub,
       familyName,
       platform,
+      dueDate,
+      ppNumber,
     },
     {
       headers: getHeaderAuth(),
-    },
+    }
   );
   console.log(result);
   return result.data;
 };
 
-const getTokenByEmail = async (token) => {
-  let result = await fetchFamily(token)
+const getTokenByEmail = async token => {
+  let result = await fetchFamily(token);
 
-  if(result.hostEmail !== getUserData().sub) {
+  if (result.hostEmail !== getUserData().sub) {
     return {
-      status : false,
-      msg: "ไม่สามารถเข้าถึงได้"
-    }
+      status: false,
+      msg: "ไม่สามารถเข้าถึงได้",
+    };
   }
   return {
-    status : true,
-    data: result
-  }
-}
+    status: true,
+    data: result,
+  };
+};
 
-export { fetchFamily, fetchFamilyByEmail, createFamily, getTokenByEmail };
+const setMonthAPI = async payload => {
+  let {id, lastDate, expireDate, familyID} = payload;
+  let result = await axios.put(
+    BASE_URL + `/admin/members/edit/date/${id}`,
+    {
+      lastDate,
+      expireDate,
+      familyID,
+    },
+    {
+      headers: getHeaderAuth(),
+    }
+  );
+  return result.data;
+};
+
+const editMember = async payload => {
+  let {id, name, lastDate, expireDate, img_src, familyID} = payload;
+  let result = await axios.put(
+    BASE_URL + `/admin/members/edit/${id}`,
+    {
+      name,
+      lastDate,
+      expireDate,
+      img_src,
+      familyID,
+    },
+    {
+      headers: getHeaderAuth(),
+    }
+  );
+  return result.data;
+};
+
+const addPriceAPI = async payload => {
+  const {price, month, img_src, familyID} = payload;
+
+  let result = await axios.post(
+    BASE_URL + "/admin/family/price/add",
+    {
+      price,
+      month,
+      img_src,
+      familyID,
+    },
+    {
+      headers: getHeaderAuth(),
+    }
+  );
+
+  return result.data;
+};
+
+const addMemberAPI = async payload => {
+  const {name, lastDate, expireDate, img_src, familyID} = payload;
+  let result = await axios.post(
+    BASE_URL + "/admin/members/add",
+    {
+      name,
+      lastDate,
+      expireDate,
+      img_src,
+      familyID,
+    },
+    {
+      headers: getHeaderAuth(),
+    }
+  );
+  return result.data;
+};
+
+export {
+  fetchFamily,
+  fetchFamilyByEmail,
+  createFamily,
+  getTokenByEmail,
+  setMonthAPI,
+  editMember,
+  addPriceAPI,
+  addMemberAPI,
+};

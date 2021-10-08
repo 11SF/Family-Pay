@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import "./YoutubePage.css";
 import Header from "../components/Navbar/NavbarYoutube";
 import Card from "../components/Card/Card";
-import Payment from "../components/Payment/Payment";
+import Payment from "../components/Payment/PaymentYoutube";
 // import axios from "axios";
 
 import loading_icon from "../assets/bars.svg";
@@ -10,29 +10,38 @@ import {useParams} from "react-router";
 import {fetchFamily} from "../modules/AdminService";
 
 export default function YoutubeyPage({user}) {
-  // const BASE_URL = "http://localhost:5000/api/v2";
   const [memberData, setMemberData] = useState([]);
   const [familyData, setFamilyData] = useState("");
+  const [prices, setPrices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
   const {token} = useParams();
+
+  useEffect(() => {
+    // setLoading(true);
+    fetchData();
+  }, []);
 
   async function fetchData() {
     let result = await fetchFamily(token);
     setFamilyData(result);
     let arr = result.members;
     setMemberData(arr);
+    setPrices(result.prices);
   }
 
   useEffect(() => {
-    fetchData();
-    // setTimeout(() => {
-    //   console.log(memberData.length);
-    // }, 1000);
-  }, []);
-  useEffect(() => {
-    setLoading(false);
-    // console.log(memberData.length);
+    if (memberData.length !== 0) {
+      setLoading(false);
+    }
   }, [memberData]);
+
+  useEffect(() => {
+    if (prices.length !== 0) {
+      console.log(prices);
+      setLoading2(false);
+    }
+  }, [prices]);
 
   return (
     <div>
@@ -64,7 +73,7 @@ export default function YoutubeyPage({user}) {
           )}
         </div>
         <div className="bottom_wave" data-aos="slide-up"></div>
-        {/* <Payment /> */}
+        {loading2 ? null : <Payment prices={prices} />}
       </main>
       <footer className="footer">11SF</footer>
     </div>

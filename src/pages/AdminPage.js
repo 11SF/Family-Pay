@@ -1,16 +1,20 @@
 import React, {useState, useEffect} from "react";
 import HomeAdmin from "../components/Admin/HomeAdmin";
-import {getUserData} from "../modules/AuthService";
+import {getUserData, logout} from "../modules/AuthService";
 import {fetchFamilyByEmail, getTokenByEmail} from "../modules/AdminService";
-import {useHistory} from "react-router-dom";
 import {useParams} from "react-router";
+import FamilyDetail from "../components/Admin/FamilyDetail";
+import ManageMembers from "../components/Admin/ManageMembers";
+import ManagePrice from "../components/Admin/ManagePrice";
+import {Link} from "react-router-dom";
 
-const menuList = ["หน้าแรก", "รายชื่อสมาชิก", "ข้อมูลครอบครัว", "ข้อมูลราคา"];
+const menuList = ["หน้าแรก", "เพิ่มสมาชิก", "ข้อมูลครอบครัว", "ข้อมูลราคา"];
 
 function AdminPage() {
   const [menuIndex, setMenuIndex] = useState(0);
   const [familyData, setFamilyData] = useState(null);
   const [isLoading, setLoading] = useState(true);
+  const [msg, setMsg] = useState("");
   const {token} = useParams();
 
   const fetchData = async () => {
@@ -18,6 +22,7 @@ function AdminPage() {
     if (result.status) {
       return setFamilyData(result.data);
     }
+    setMsg(result.msg);
     setFamilyData(null);
   };
   useEffect(() => {
@@ -26,20 +31,24 @@ function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (familyData != null) {
+    if (familyData != null || msg !== "") {
       setLoading(false);
-      console.log(familyData);
     }
-  }, [familyData]);
+  }, [familyData, msg]);
 
   function getPage() {
     switch (menuIndex) {
       case 1:
-        return "1";
+        return <ManageMembers familyID={familyData._id} />;
       case 2:
-        return "2";
+        return (
+          <FamilyDetail
+            familyName={familyData.familyName}
+            token={familyData.token}
+          />
+        );
       case 3:
-        return "3";
+        return <ManagePrice familyData={familyData} />;
 
       default:
         return <HomeAdmin familyData={familyData} />;
@@ -51,9 +60,25 @@ function AdminPage() {
   // }
   //   setFamilySelect
 
+  const logout = () => {
+    sessionStorage.removeItem("userToken");
+    window.location.reload();
+  };
+  if (isLoading) {
+    return <p className="text-black"> กำลังโหลด..... </p>;
+  }
+  if (msg !== "") {
+    return (
+      <p className="text-black bottom-1/2 w-screen text-center absolute">
+        {" "}
+        อย่าทำแบบนั้น{" "}
+      </p>
+    );
+  }
+
   return (
     <div>
-      <header className="h-16 px-10 bg-blue-700 flex items-center justify-between">
+      <header className="h-16 w-full px-10 bg-blue-700 flex items-center justify-between fixed">
         <div className="flex">
           <p className="mr-10 cursor-default">
             | ADMIN {getUserData().username} สุดเท่ |
@@ -65,6 +90,7 @@ function AdminPage() {
                 onClick={() => {
                   setMenuIndex(index);
                 }}
+                key={index}
               >
                 {value}
               </p>
@@ -72,15 +98,20 @@ function AdminPage() {
           </div>
         </div>
         <div className="inline-flex">
-          {/* <p className="text-md font-light cursor-pointer hover:text-gray-400 text-sm mr-10" onClick={() => {selectFamily()}}>
-            เลือก Family
-          </p> */}
-          <p className="text-md font-light cursor-pointer hover:text-gray-400 text-sm">
+          <Link to="/admin/selectfamily">
+            <p className="text-md font-light cursor-pointer hover:text-gray-400 text-sm mr-10">
+              เลือก Family
+            </p>{" "}
+          </Link>
+          <p
+            className="text-md font-light cursor-pointer hover:text-gray-400 text-sm"
+            onClick={() => logout()}
+          >
             ออกจากระบบ
           </p>
         </div>
       </header>
-      <main>{isLoading ? <h1>Loading</h1> : getPage()}</main>
+      <main className="pt-20">{isLoading ? <h1>Loading</h1> : getPage()}</main>
       {/* <main>{getPage()}</main> */}
     </div>
   );

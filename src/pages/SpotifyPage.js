@@ -8,31 +8,45 @@ import Payment from "../components/Payment/Payment";
 import loading_icon from "../assets/bars.svg";
 import {useParams} from "react-router";
 import {fetchFamily} from "../modules/AdminService";
+import {isLogin} from "../modules/AuthService";
 
-export default function SpotifyPage({user}) {
+export default function SpotifyPage() {
   // const BASE_URL = "http://localhost:5000/api/v2";
   const [memberData, setMemberData] = useState([]);
   const [familyData, setFamilyData] = useState("");
+  const [prices, setPrices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loading2, setLoading2] = useState(true);
   const {token} = useParams();
+
+  useEffect(() => {
+    // setLoading(true);
+    fetchData();
+  }, []);
 
   async function fetchData() {
     let result = await fetchFamily(token);
     setFamilyData(result);
     let arr = result.members;
     setMemberData(arr);
+    setPrices(result.prices);
   }
 
   useEffect(() => {
-    fetchData();
-    // setTimeout(() => {
-    //   console.log(memberData.length);
-    // }, 1000);
-  }, []);
-  useEffect(() => {
-    setLoading(false);
-    // console.log(memberData.length);
+    if (memberData.length !== 0) {
+      setLoading(false);
+    }
+    setTimeout(() => {
+      setLoading(false);
+    }, 10000);
   }, [memberData]);
+
+  useEffect(() => {
+    if (prices.length !== 0) {
+      console.log(prices);
+      setLoading2(false);
+    }
+  }, [prices]);
 
   return (
     <div>
@@ -65,7 +79,9 @@ export default function SpotifyPage({user}) {
           )}
         </div>
         <div className="bottom_wave" id="spotify" data-aos="slide-up"></div>
-        {/* <Payment /> */}
+        {loading2 ? null : (
+          <Payment prices={prices} ppNumber={familyData.ppNumber} />
+        )}
       </main>
       <footer className="footer">11SF</footer>
     </div>

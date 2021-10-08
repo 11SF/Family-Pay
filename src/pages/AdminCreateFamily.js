@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { createFamily } from "../modules/AdminService";
-import { getUserData } from "../modules/AuthService";
+import React, {useState} from "react";
+import {createFamily} from "../modules/AdminService";
+import {getUserData} from "../modules/AuthService";
 
 function AdminCreateFamily() {
   const [familyName, setFamilyName] = useState("");
@@ -8,9 +8,32 @@ function AdminCreateFamily() {
   const [isLoading, setLoading] = useState(false);
   const [isCreated, setCreated] = useState(false);
   const [familyDetail, setFamilyDetail] = useState(false);
+  const [dueDate, setDueDate] = useState(1);
+  const [ppNumber, setPPNumber] = useState("0000000000");
   const btn_style = {
     selected: "w-1/2 bg-gray-200 h-14 text-xl ",
     notSelect: "w-1/2 bg-gray-50 h-14 hover:bg-gray-200",
+  };
+  const dueDate_style = {
+    valid: "w-full p-2 text-center rounded-lg placeholder-red-400",
+    invalid:
+      "w-full p-2 text-center rounded-lg placeholder-red-400 border-2 border-red-500",
+  };
+
+  const validDueDate = () => {
+    if (dueDate >= 1 && dueDate <= 31) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const validPP = () => {
+    let temp = ppNumber.length
+    if (temp === 10 || temp === 13) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const form = () => (
@@ -20,12 +43,12 @@ function AdminCreateFamily() {
         <input
           placeholder={`ครอบครัว ${getUserData().username} แสนอบอุ่น`}
           className="w-full p-2 text-center rounded-lg"
-          onChange={(e) => {
+          onChange={e => {
             setFamilyName(e.target.value);
           }}
         ></input>
       </div>
-      <div className="w-1/2 mx-auto mt-10">
+      <div className="w-1/2 mx-auto my-10">
         <p className="text-left">เลือก Platform</p>
         <div className="flex mt-2">
           <button
@@ -54,7 +77,32 @@ function AdminCreateFamily() {
           </button>
         </div>
       </div>
-      {familyName && platform ? (
+      <div className="w-1/2 mx-auto my-10">
+        <p className="text-left">วันตัดยอด</p>
+        <input
+          type="number"
+          placeholder="ตัดยอดทุก ๆ วันที่ ... ของเดือน"
+          className={
+            validDueDate() ? dueDate_style.valid : dueDate_style.invalid
+          }
+          onChange={e => {
+            setDueDate(e.target.value);
+          }}
+        ></input>
+      </div>
+      <div className="w-1/2 mx-auto">
+        <p className="text-left">หมายเลยพร้อมเพย์</p>
+        <input
+          type="number"
+          className={
+            validPP() ? dueDate_style.valid : dueDate_style.invalid
+          }
+          onChange={e => {
+            setPPNumber(e.target.value);
+          }}
+        ></input>
+      </div>
+      {familyName && platform && validDueDate() && validPP() ? (
         <button
           className="w-1/2 h-14 mt-16 text-2xl mx-auto rounded-lg bg-gray-50 hover:bg-gray-200"
           onClick={() => {
@@ -73,7 +121,7 @@ function AdminCreateFamily() {
 
   const handleCreate = async () => {
     setLoading(true);
-    let result = await createFamily(familyName, platform);
+    let result = await createFamily(familyName, platform, dueDate, ppNumber);
     console.log(result);
     if (result.status) {
       setFamilyDetail(result);
@@ -116,7 +164,7 @@ function AdminCreateFamily() {
   );
   return (
     <div className="h-auto w-screen bg-blue-600 md:h-screen">
-      <div className="container mx-auto py-40">
+      <div className="container mx-auto py-20">
         <h1 className="text-white text-5xl pb-28">สร้างครอบครัวใหม่</h1>
         {isLoading ? <h1>Loading</h1> : isCreated ? showDetail() : form()}
       </div>

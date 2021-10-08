@@ -1,14 +1,13 @@
 import React, {useState} from "react";
-import {Link} from "react-router-dom";
-import {goLogin} from "../modules/AuthService";
-import "./Login.css";
+import {register} from "../modules/AuthService";
+import Swal from "sweetalert2";
 
-function Login() {
+function Register() {
   const [email, setEmail] = useState(null);
+  const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [isBlack, setIsBlank] = useState(false);
   const [valid, setValid] = useState(true);
-  // const [data, setData] = useState(null);
 
   const handleEmail = e => {
     setEmail(e.target.value);
@@ -16,64 +15,36 @@ function Login() {
   const handlePassword = e => {
     setPassword(e.target.value);
   };
-
-  // const handleSubmit = e => {
-  //     if(!email||!password) {
-  //         setIsBlank(true);
-  //     } else {
-  //         e.preventDefault();
-  //         setAuth(loginWithEmail(email,password))
-  //         // loginWithEmail(email,password);
-  //     }
-  // }
+  const handleUsername = e => {
+    setUsername(e.target.value);
+  };
   async function handleSubmit(e) {
-    if (!email || !password) {
+    if (!email || !password || !username) {
       setIsBlank(true);
     } else {
       e.preventDefault();
-      goLogin(email, password).then(res => {
-        if (res) {
-          window.location.reload();
+      register({
+        email,
+        username,
+        password,
+      }).then(res => {
+        if (res.status) {
+            Swal.fire("สมัครสมาชิกสำเร็จ")
+        //   window.location.reload();
         } else {
-          setValid("")
+            Swal.fire(res.message)
         }
-
       });
     }
   }
-
-  // const loginWithEmail = (email,password) => {
-  //    auth.signInWithEmailAndPassword(email, password)
-  //     .then((userCredential) => {
-  //         // Signed in
-  //         const user = userCredential.user;
-  //         console.log(user);
-  //     })
-  //     .catch((error) => {
-  //         const errorCode = error.code;
-  //         const errorMessage = error.message;
-  //         setValid(false)
-  //     });
-  // }
-
-  // function login() {
-  // goLogin(email, password);
-  // if(isLogin()) {
-  //   return <Redirect to="/admin" />
-  // }
-  // }
-
   return (
     <div className="container text-left" id="login">
-      <Link className="back_btn" to="/" data-aos="fade-right">
-        ย้อนกลับ
-      </Link>
       <div className="login_wrapper">
         <div className="loginBox" data-aos="zoom-in">
           <div className="logo" id="login_logo">
             Admin Area!!!
           </div>
-          <p className="detail">สำหรับหัวหน้าครอบครัว 🌟</p>
+          <p className="detail">สมัครสมาชิก 🌟</p>
           <form onSubmit={handleSubmit}>
             <div className="input_area">
               <input
@@ -81,6 +52,12 @@ function Login() {
                 placeholder="E-mail"
                 type="email"
                 onChange={handleEmail}
+              ></input>
+              <input
+                className="login_input"
+                placeholder="Username"
+                type="text"
+                onChange={handleUsername}
               ></input>
               <input
                 className="login_input"
@@ -92,7 +69,7 @@ function Login() {
             {isBlack ? <div>กรุณากรอกข้อมูลให้ครบถ้วน</div> : ""}
             {/* <Router> */}
             <button className="login_btn" onClick={handleSubmit}>
-              เข้าสู่ระบบ
+              สมัครสมาชิก
             </button>
             {/* </Router> */}
           </form>
@@ -102,4 +79,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;

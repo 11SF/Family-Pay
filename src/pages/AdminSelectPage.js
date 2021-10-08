@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { getUserData } from "../modules/AuthService";
-import { fetchFamilyByEmail } from "../modules/AdminService";
-import { Link,Redirect } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {getUserData} from "../modules/AuthService";
+import {fetchFamilyByEmail} from "../modules/AdminService";
+import {Link, Redirect} from "react-router-dom";
 import FamilyCard from "../components/selectPage/FamilyCard";
-
 
 function AdminSelectPage() {
   const [isLoading, setLoading] = useState(false);
@@ -23,29 +22,8 @@ function AdminSelectPage() {
     setLoading(false);
   };
 
-  const selectFamily = () => (
-    <div className="py-44">
-      <h1 className="text-white mb-10 text-5xl">
-        สวัสดี {" " + getUserData().username}
-      </h1>
-      <div className="flex flex-col md:flex-row">
-        {isLoading ? (
-          <h1 className="text-white">Loading</h1>
-        ) : (
-          families.map((family, index) => (
-            <Link
-              to={`/admin/managefamily/${family.token}`}
-              className="mx-4 p-4 rounded-md _hover"
-              key={index}
-            >
-              <FamilyCard
-                familyPlatform={family.platform}
-                familyName={family.familyName}
-              />
-            </Link>
-          ))
-        )}
-        <Link to="/admin/createfamily" className="mx-4 p-4 _hover">
+  const addFamilyBtn = () => (
+    <Link to="/admin/createfamily" className="p-4 _hover">
           <div className="h-auto w-44 d-flex flex-shrink-0">
             <div className="h-44 w-44 rounded-md p-3">
               <svg
@@ -66,14 +44,35 @@ function AdminSelectPage() {
             <p className="text-center text-2xl text-white">สร้างครอบครัวใหม่</p>
           </div>
         </Link>
+  )
+
+  const selectFamily = () => (
+    // <div className="mx-auto py-44">
+      <div className="flex flex-wrap justify-center gap-5">
+        {isLoading ? (
+          <h1 className="text-white">Loading</h1>
+        ) : (
+          families.map((family, index) => (
+            <Link
+              to={`/admin/managefamily/${family.token}`}
+              className="p-4 rounded-md _hover"
+              key={index}
+            >
+              <FamilyCard
+                familyPlatform={family.platform}
+                familyName={family.familyName}
+              />
+            </Link>
+          ))
+        )}
+        {addFamilyBtn()}
       </div>
-    </div>
+    // </div>
   );
 
-
   return (
-    <div className="h-auto w-screen bg-black md:h-screen">
-      <div className="text-white text-xl py-6 px-10 w-full flex justify-between items-center absolute">
+    <div className="bg-black w-screen h-auto md:h-screen">
+      <header className="text-white text-xl py-6 px-10 w-full flex justify-between items-center absolute">
         <Link to="/">
           <h1
             className="text-left cursor-pointer hover:text-gray-300"
@@ -85,10 +84,16 @@ function AdminSelectPage() {
           </h1>
         </Link>
         <h1 className="text-right cursor-default">สำหรับ Admin</h1>
-      </div>
-      <div className="h-full w-full flex flex-wrap justify-center items-center">
-        {selectFamily()}
-      </div>
+      </header>
+
+      <main className="py-44 container h-full mx-auto flex flex-wrap justify-center items-center">
+        <div>
+          <h1 className="text-white mb-10 text-5xl">
+            สวัสดีท่าน {" " + getUserData().username}
+          </h1>
+          {selectFamily()}
+        </div>
+      </main>
     </div>
   );
 }

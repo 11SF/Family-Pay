@@ -2,9 +2,9 @@ import React, {useState} from "react";
 import Swal from "sweetalert2";
 function Card({user}) {
   const [month, setMonth] = useState(0);
-  const confirm = user => {
+  const confirm = () => {
     Swal.fire({
-      title: `เพิ่ม ${month} เดือนให้กับ ${user}`,
+      title: `เพิ่ม ${month} เดือนให้กับ ${user.name}`,
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Save",
@@ -16,6 +16,7 @@ function Card({user}) {
       } else if (result.isDenied) {
         Swal.fire("Changes are not saved", "", "info");
       }
+      // setMonth(0);
     });
   };
   return (
@@ -56,7 +57,7 @@ function Card({user}) {
                 : "bg-blue-500 p-2 text-sm text-white w-full rounded-xl cursor-default"
             }
             onClick={() => {
-              confirm("11SF");
+              confirm();
             }}
           >
             ยืนยัน

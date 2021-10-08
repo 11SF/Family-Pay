@@ -34,7 +34,18 @@ function isLogin() {
 function getHeaderAuth() {
   return {
     Authorization: "Bearer " + sessionStorage.getItem("userToken"),
-  }
+  };
 }
 
-export {goLogin, logout, getUserData, isLogin, getHeaderAuth};
+async function register(payload) {
+  const {email, username, password} = payload;
+  let res = await axios.post(BASE_URL + "/register", {
+    email,
+    username,
+    password,
+    userLevel: "admin",
+  });
+  return res.data
+}
+
+export {goLogin, logout, getUserData, isLogin, getHeaderAuth, register};

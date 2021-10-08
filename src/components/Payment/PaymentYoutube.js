@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from "react";
 import {fetchFamily} from "../../modules/AdminService";
 
-import "./Payment.css";
+import "./PaymentYoutube.css";
 
-export default function Payment({prices, ppNumber}) {
+export default function PaymentYoutube({prices, ppNumber}) {
   const [monthSelect, setMonthSelect] = useState("");
   const [ppNumberMsg, setPPNumber] = useState("");
   const [price, setPrices] = useState([]);
