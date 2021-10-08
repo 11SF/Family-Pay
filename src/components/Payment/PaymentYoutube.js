@@ -24,7 +24,7 @@ export default function PaymentYoutube({prices, ppNumber}) {
   }
   return (
     <div>
-      <div className="payment_area">
+      <div className="payment_area_YT">
         <div className="payment_box">
           <div className="payment_group">
             <img
@@ -45,7 +45,7 @@ export default function PaymentYoutube({prices, ppNumber}) {
                 {price.map((value, index) => (
                   <button
                     className="month_btn"
-                    id={indexSelected === index ? "active" : ""}
+                    id={indexSelected === index ? "active_YT" : ""}
                     onClick={() => setIndexSelected(index)}
                   >
                     {value.month} เดือน
@@ -56,7 +56,7 @@ export default function PaymentYoutube({prices, ppNumber}) {
               <div className="pp_number">
                 <p>{ppNumberMsg}</p>
                 <button
-                  className="month_btn"
+                  className="month_btn_YT"
                   id="copy"
                   onClick={() => {
                     navigator.clipboard.writeText(ppNumber);
