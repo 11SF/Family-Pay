@@ -9,8 +9,10 @@ import AdminSelectPage from "./pages/AdminSelectPage";
 import AdminCreateFamily from "./pages/AdminCreateFamily";
 import YoutubeyPage from "./pages/YoutubePage";
 import Register from "./pages/Register";
-
+import Aos from 'aos';
+import 'aos/dist/aos.css';
 function App() {
+  Aos.init();
   return (
     <div className="App">
       {/* <Router> */}

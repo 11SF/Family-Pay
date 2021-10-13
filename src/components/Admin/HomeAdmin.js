@@ -15,7 +15,7 @@ function HomeAdmin({familyData}) {
 
       <div className="py-20 flex flex-wrap justify-around flex-row gap-x-10 gap-y-32">
         {membersData.map(member => (
-          <Card2 user={member} familyID={familyData._id} key={member._id}></Card2>
+          <Card2 user={member} familyID={familyData._id} familyData={familyData} key={member._id}></Card2>
         ))}
       </div>
     </div>

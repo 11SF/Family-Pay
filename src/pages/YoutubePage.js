@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import "./YoutubePage.css";
 import Header from "../components/Navbar/NavbarYoutube";
-import Card from "../components/Card/Card";
+import Card from "../components/Card/CardYoutube";
 import Payment from "../components/Payment/PaymentYoutube";
 // import axios from "axios";
 
@@ -73,7 +73,7 @@ export default function YoutubeyPage({user}) {
           )}
         </div>
         <div className="bottom_wave" data-aos="slide-up"></div>
-        {loading2 ? null : <Payment prices={prices} />}
+        {loading2 ? null : <Payment prices={prices} ppNumber={familyData.ppNumber} />}
       </main>
       <footer className="footer">11SF</footer>
     </div>

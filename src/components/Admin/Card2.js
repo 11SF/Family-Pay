@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import Swal from "sweetalert2";
 import {editMember, setMonthAPI} from "../../modules/AdminService";
 
-function Card2({user, familyID}) {
+function Card2({user, familyID, familyData}) {
   const [month, setMonth] = useState(0);
   const [name, setName] = useState(user.name);
   const [img_src, setImg_src] = useState(user.img_src);
@@ -11,11 +11,16 @@ function Card2({user, familyID}) {
   const setData = async () => {
     return await setMonthAPI({
       id: user._id,
-      lastDate: user.lastDate,
+      lastDate: getNowDate(),
       expireDate,
       familyID,
     });
   };
+  const getNowDate = () => {
+    let date = new Date()
+    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + parseInt(date.getFullYear() + 543)
+  }
+
   const pushCount = () => {
     setMonth(month + 1);
     let a = expireDate.split("/");
@@ -23,10 +28,10 @@ function Card2({user, familyID}) {
     if (int > 12) {
       int = 1;
       let year = parseInt(a[2]) + 1;
-      setExpireDate(`${a[0]}/${int}/${year}`);
+      setExpireDate(`${familyData.dueDate}/${int}/${year}`);
       return;
     }
-    setExpireDate(`${a[0]}/${int}/${a[2]}`);
+    setExpireDate(`${familyData.dueDate}/${int}/${a[2]}`);
   };
   const deCount = () => {
     setMonth(month - 1);
@@ -35,10 +40,10 @@ function Card2({user, familyID}) {
     if (int === 0) {
       int = 12;
       let year = parseInt(a[2]) - 1;
-      setExpireDate(`${a[0]}/${int}/${year}`);
+      setExpireDate(`${familyData.dueDate}/${int}/${year}`);
       return;
     }
-    setExpireDate(`${a[0]}/${int}/${a[2]}`);
+    setExpireDate(`${familyData.dueDate}/${int}/${a[2]}`);
   };
   const save = () => {
     editMember({
@@ -66,8 +71,10 @@ function Card2({user, familyID}) {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         setData().then(res => {
-          Swal.fire(res.message);
-          setMonth(0);
+          Swal.fire(res.message).then(()=> {
+            window.location.reload()
+            setMonth(0);
+          })
         });
       } else if (result.isDenied) {
         Swal.fire("Changes are not saved", "", "info");
