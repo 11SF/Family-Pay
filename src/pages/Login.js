@@ -1,13 +1,14 @@
 import React, {useState} from "react";
 import {Link} from "react-router-dom";
 import {goLogin} from "../modules/AuthService";
+import loading_admin from "../assets/loading_admin.svg";
 import "./Login.css";
 
 function Login() {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-  const [isBlack, setIsBlank] = useState(false);
-  const [valid, setValid] = useState(true);
+  const [isLoading, setLoading] = useState(false);
+  const [msg, setMsg] = useState(null);
   // const [data, setData] = useState(null);
 
   const handleEmail = e => {
@@ -17,51 +18,24 @@ function Login() {
     setPassword(e.target.value);
   };
 
-  // const handleSubmit = e => {
-  //     if(!email||!password) {
-  //         setIsBlank(true);
-  //     } else {
-  //         e.preventDefault();
-  //         setAuth(loginWithEmail(email,password))
-  //         // loginWithEmail(email,password);
-  //     }
-  // }
   async function handleSubmit(e) {
+    e.preventDefault();
     if (!email || !password) {
-      setIsBlank(true);
+      setMsg("กรุณากรอกข้อมูลให้ครบถ้วน");
     } else {
-      e.preventDefault();
+      setLoading(true);
+
       goLogin(email, password).then(res => {
+        setLoading(false);
+        console.log(res);
         if (res) {
           window.location.reload();
         } else {
-          setValid("")
+          setMsg("อีเมลหรือรหัสผ่านไม่ถูกต้อง!");
         }
-
       });
     }
   }
-
-  // const loginWithEmail = (email,password) => {
-  //    auth.signInWithEmailAndPassword(email, password)
-  //     .then((userCredential) => {
-  //         // Signed in
-  //         const user = userCredential.user;
-  //         console.log(user);
-  //     })
-  //     .catch((error) => {
-  //         const errorCode = error.code;
-  //         const errorMessage = error.message;
-  //         setValid(false)
-  //     });
-  // }
-
-  // function login() {
-  // goLogin(email, password);
-  // if(isLogin()) {
-  //   return <Redirect to="/admin" />
-  // }
-  // }
 
   return (
     <div className="container text-left" id="login">
@@ -70,32 +44,46 @@ function Login() {
       </Link>
       <div className="login_wrapper">
         <div className="loginBox" data-aos="zoom-in">
-          <div className="logo" id="login_logo">
-            Admin Area!!!
-          </div>
-          <p className="detail">สำหรับหัวหน้าครอบครัว 🌟</p>
-          <form onSubmit={handleSubmit}>
-            <div className="input_area">
-              <input
-                className="login_input"
-                placeholder="E-mail"
-                type="email"
-                onChange={handleEmail}
-              ></input>
-              <input
-                className="login_input"
-                placeholder="Password"
-                type="password"
-                onChange={handlePassword}
-              ></input>
-            </div>
-            {isBlack ? <div>กรุณากรอกข้อมูลให้ครบถ้วน</div> : ""}
-            {/* <Router> */}
-            <button className="login_btn" onClick={handleSubmit}>
-              เข้าสู่ระบบ
-            </button>
-            {/* </Router> */}
-          </form>
+          {isLoading ? (
+            <img
+              className="mx-auto my-10"
+              src={loading_admin}
+              alt="loading_svg"
+            ></img>
+          ) : (
+            <>
+              <div className="logo" id="login_logo">
+                Admin Area!!!
+              </div>
+              <p className="detail">สำหรับหัวหน้าครอบครัว 🌟</p>
+              <form onSubmit={handleSubmit}>
+                <div className="input_area">
+                  <input
+                    className="login_input"
+                    placeholder="E-mail"
+                    type="email"
+                    onChange={handleEmail}
+                  ></input>
+                  <input
+                    className="login_input"
+                    placeholder="Password"
+                    type="password"
+                    onChange={handlePassword}
+                  ></input>
+                </div>
+                {msg ? (
+                  <div className="mx-auto text-center text-red-500">{msg}</div>
+                ) : (
+                  ""
+                )}
+                {/* <Router> */}
+                <button className="login_btn" onClick={handleSubmit}>
+                  เข้าสู่ระบบ
+                </button>
+                {/* </Router> */}
+              </form>
+            </>
+          )}
         </div>
       </div>
     </div>

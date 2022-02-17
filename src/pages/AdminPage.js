@@ -71,14 +71,14 @@ function AdminPage() {
     return (
       <p className="text-black bottom-1/2 w-screen text-center absolute">
         {" "}
-        อย่าทำแบบนั้น{" "}
+        อย่าทำแบบนั้น 😕{" "}
       </p>
     );
   }
 
   return (
     <div>
-      <header className="h-16 w-full px-10 bg-blue-700 flex items-center justify-between fixed">
+      <header className="h-16 w-full px-10 bg-indigo-900 flex items-center justify-between fixed">
         <div className="flex">
           <p className="mr-10 cursor-default">
             | ADMIN {getUserData().username} สุดเท่ |

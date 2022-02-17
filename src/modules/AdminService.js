@@ -107,6 +107,43 @@ const addPriceAPI = async payload => {
   return result.data;
 };
 
+const editPriceAPI = async payload => {
+  const {price, month, img_src, familyID, id} = payload;
+  console.log(payload);
+
+  let result = await axios.put(
+    BASE_URL + "/admin/family/price/edit/" + id,
+    {
+      price,
+      month,
+      img_src,
+      familyID,
+    },
+    {
+      headers: getHeaderAuth(),
+    }
+  );
+
+  return result.data;
+};
+
+const deletePriceAPI = async payload => {
+  const {familyID, id} = payload;
+  console.log(payload);
+
+  let result = await axios.put(
+    BASE_URL + "/admin/family/price/delete/" + id,
+    {
+      familyID,
+    },
+    {
+      headers: getHeaderAuth(),
+    }
+  );
+
+  return result.data;
+};
+
 const addMemberAPI = async payload => {
   const {name, lastDate, expireDate, img_src, familyID} = payload;
   let result = await axios.post(
@@ -133,5 +170,7 @@ export {
   setMonthAPI,
   editMember,
   addPriceAPI,
+  editPriceAPI,
+  deletePriceAPI,
   addMemberAPI,
 };

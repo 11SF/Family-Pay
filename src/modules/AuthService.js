@@ -3,16 +3,18 @@ import jwt_decode from "jwt-decode";
 const BASE_URL = "https://mysitebackend.herokuapp.com/api/auth";
 
 async function goLogin(username, password) {
-  let res = await axios.post(BASE_URL + "/login", {
-    username,
-    password,
-  });
-  console.log(res);
-  if (res.data.status) {
-    sessionStorage.setItem("userToken", res.data.token);
-    return true;
+  try {
+    let res = await axios.post(BASE_URL + "/login", {
+      username,
+      password,
+    });
+    if (res.data.status) {
+      sessionStorage.setItem("userToken", res.data.token);
+      return true;
+    }
+  } catch (err) {
+    return false;
   }
-  return false;
 }
 function logout() {
   sessionStorage.removeItem("userToken");
@@ -45,7 +47,7 @@ async function register(payload) {
     password,
     userLevel: "admin",
   });
-  return res.data
+  return res.data;
 }
 
 export {goLogin, logout, getUserData, isLogin, getHeaderAuth, register};

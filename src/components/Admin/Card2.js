@@ -7,7 +7,11 @@ function Card2({user, familyID, familyData}) {
   const [name, setName] = useState(user.name);
   const [img_src, setImg_src] = useState(user.img_src);
   const [expireDate, setExpireDate] = useState(user.expireDate);
+  const [tempExpireDate] = useState(user.expireDate);
   const [edit, setEdit] = useState(false);
+  const [prices] = useState(familyData.prices);
+  const [priceIndexSelect, setPriceIndexSelect] = useState(99);
+  const [isCustomEdit, setCustomEdit] = useState(false);
   const setData = async () => {
     return await setMonthAPI({
       id: user._id,
@@ -17,9 +21,15 @@ function Card2({user, familyID, familyData}) {
     });
   };
   const getNowDate = () => {
-    let date = new Date()
-    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + parseInt(date.getFullYear() + 543)
-  }
+    let date = new Date();
+    return (
+      date.getDate() +
+      "/" +
+      (date.getMonth() + 1) +
+      "/" +
+      parseInt(date.getFullYear() + 543)
+    );
+  };
 
   const pushCount = () => {
     setMonth(month + 1);
@@ -32,6 +42,23 @@ function Card2({user, familyID, familyData}) {
       return;
     }
     setExpireDate(`${familyData.dueDate}/${int}/${a[2]}`);
+  };
+  const pushCountPrice = month => {
+    setMonth(month)
+    let a = tempExpireDate.split("/");
+    let int = parseInt(a[1]);
+    let year = parseInt(a[2])
+    let answerTemp = ""
+    for (let i = 0; i < month; i++) {
+      int = int + 1;
+      if (int > 12) {
+        int = 1;
+        year = parseInt(a[2]) + 1;
+        answerTemp = `${familyData.dueDate}/${int}/${year}`
+      }
+      answerTemp = `${familyData.dueDate}/${int}/${year}`
+    }
+    setExpireDate(answerTemp)
   };
   const deCount = () => {
     setMonth(month - 1);
@@ -55,39 +82,169 @@ function Card2({user, familyID, familyData}) {
       img_src,
     }).then(res => {
       if (res.status) {
-        Swal.fire(res.message).then(res => window.location.reload());
+        Swal.fire("ดำเนินการเรียบร้อย").then(res => window.location.reload());
       } else {
         Swal.fire("เกิดข้อผิดพลาด").then(res => window.location.reload());
       }
     });
   };
-  const confirm = () => {
-    Swal.fire({
-      title: `เพิ่ม ${month} เดือนให้กับ ${user.name}`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Save",
-    }).then(result => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-        setData().then(res => {
-          Swal.fire(res.message).then(()=> {
-            window.location.reload()
-            setMonth(0);
-          })
-        });
-      } else if (result.isDenied) {
-        Swal.fire("Changes are not saved", "", "info");
-      }
-      // setMonth(0);
-    });
+  const confirm = isCustom => {
+    if (isCustom) {
+      Swal.fire({
+        title: `เพิ่มเดือน ${month} เดือน ให้กับ ${user.name} ใช่หรือไม่`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Save",
+      }).then(result => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          setData().then(res => {
+            Swal.fire("ดำเนินการเรียบร้อย").then(() => {
+              window.location.reload();
+              setMonth(0);
+            });
+          });
+        } else if (result.isDenied) {
+          Swal.fire("Changes are not saved", "", "info");
+        }
+        // setMonth(0);
+      });
+    } else {
+      Swal.fire({
+        title: `เพิ่มเดือน ${month} เดือน จำนวนเงิน ${prices[priceIndexSelect].price} บาท ให้กับ ${user.name} ใช่หรือไม่`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Save",
+      }).then(result => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          setData().then(res => {
+            Swal.fire("ดำเนินการเรียบร้อย").then(() => {
+              window.location.reload();
+              setMonth(0);
+              setPriceIndexSelect(99);
+            });
+          });
+        } else if (result.isDenied) {
+          Swal.fire("Changes are not saved", "", "info");
+        }
+        // setMonth(0);
+      });
+    }
   };
 
   const normalCard = () => (
     <>
       <p className="text-black text-3xl">{user.name}</p>
-      <button className="text-xs" onClick={() => setEdit(true)}>
+      <button
+        className="text-xs m-auto flex text-gray-600"
+        onClick={() => setEdit(true)}
+      >
         แก้ไขข้อมูลส่วนตัว
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4 pl-1"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+          <path
+            fillRule="evenodd"
+            d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
+      <div className="w-2/3 mx-auto my-5">
+        <div className="flex justify-between">
+          <p
+            className="text-black font-light text-left"
+            style={{fontSize: "18px"}}
+          >
+            จ่ายล่าสุด :
+          </p>
+          <p
+            className="text-black font-light text-left"
+            style={{fontSize: "18px"}}
+          >
+            {user.lastDate}
+          </p>
+        </div>
+        <div className="flex justify-between">
+          <p
+            className="text-black font-light text-left"
+            style={{fontSize: "18px"}}
+          >
+            หมดอายุ :
+          </p>
+          <p
+            className="text-black font-light text-left"
+            style={{fontSize: "18px"}}
+          >
+            {expireDate}
+          </p>
+        </div>
+      </div>
+      <p className="text-black text-sm text-left">ราคาจ่าย(บาท)</p>
+      <div className="mt-3 mb-8">
+        <div className="grid grid-cols-3 gap-4">
+          {prices.map((price, index) => (
+            <button
+              className={
+                "text-sm border-2 border-opacity-75 rounded-md py-2 px-6 hover:bg-gray-200 " +
+                (priceIndexSelect === index
+                  ? "border-green-500"
+                  : "border-light-blue-500")
+              }
+              onClick={() => {
+                setPriceIndexSelect(index);
+                // setMonth(price.month);
+                // setExpireDate(tempExpireDate);
+                pushCountPrice(price.month);
+              }}
+              key={price._id}
+            >
+              {price.price}
+            </button>
+          ))}
+          <button
+            className="text-sm rounded-md text-white py-2 bg-green-500  hover:bg-green-600"
+            onClick={() => confirm(false)}
+          >
+            ยืนยัน
+          </button>
+        </div>
+        <button
+          className="text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-blue-500 hover:bg-blue-600"
+          onClick={() => setCustomEdit(true)}
+        >
+          กำหนดเอง
+        </button>
+      </div>
+    </>
+  );
+
+  const customCard = () => (
+    <>
+      <p className="text-black text-3xl">{user.name}</p>
+      <button
+        className="text-xs m-auto flex text-gray-600"
+        onClick={() => setEdit(true)}
+      >
+        แก้ไขข้อมูลส่วนตัว
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4 pl-1"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+          <path
+            fillRule="evenodd"
+            d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+            clipRule="evenodd"
+          />
+        </svg>
       </button>
       <div className="w-2/3 mx-auto my-5">
         <div className="flex justify-between">
@@ -140,11 +297,17 @@ function Card2({user, familyID, familyData}) {
         </div>
         <button
           className="text-sm w-2/6 rounded-md text-white py-2 bg-green-500 hover:bg-green-600"
-          onClick={() => confirm()}
+          onClick={() => confirm(true)}
         >
           ยืนยัน
         </button>
       </div>
+      <button
+        className="text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-blue-500 mt-16 hover:bg-blue-600"
+        onClick={() => setCustomEdit(false)}
+      >
+        ปิด
+      </button>
     </>
   );
 
@@ -198,7 +361,9 @@ function Card2({user, familyID, familyData}) {
           }}
         />
       </div>
-      <div className="p-3">{!edit ? normalCard() : editCard()}</div>
+      <div className="p-3">
+        {!edit ? (isCustomEdit ? customCard() : normalCard()) : editCard()}
+      </div>
     </div>
   );
 }
