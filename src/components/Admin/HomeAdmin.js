@@ -2,17 +2,6 @@ import React, { useState, useEffect } from "react";
 import Card2 from "./Card2";
 import { sendNotification } from "../../modules/AdminService";
 
-// function check30Min(time) {
-//   const date = new Date(time);
-//   const now = new Date();
-//   const diff = now.getTime() - date.getTime();
-//   const diffMinutes = Math.floor(diff / 1000 / 60);
-//   if (diffMinutes > 120) {
-//     return true;
-//   }
-//   return false;
-// }
-
 function check2hour(time) {
   const date = new Date(time);
   const now = new Date();
