@@ -1,8 +1,12 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
-import {editMember, setMonthAPI} from "../../modules/AdminService";
+import {
+  editMember,
+  setMonthAPI,
+  pushConfirmPayment,
+} from "../../modules/AdminService";
 
-function Card2({user, familyID, familyData}) {
+function Card2({ user, familyID, familyData }) {
   const [month, setMonth] = useState(0);
   const [name, setName] = useState(user.name);
   const [img_src, setImg_src] = useState(user.img_src);
@@ -30,7 +34,6 @@ function Card2({user, familyID, familyData}) {
       parseInt(date.getFullYear() + 543)
     );
   };
-
   const pushCount = () => {
     setMonth(month + 1);
     let a = expireDate.split("/");
@@ -43,22 +46,22 @@ function Card2({user, familyID, familyData}) {
     }
     setExpireDate(`${familyData.dueDate}/${int}/${a[2]}`);
   };
-  const pushCountPrice = month => {
-    setMonth(month)
+  const pushCountPrice = (month) => {
+    setMonth(month);
     let a = tempExpireDate.split("/");
     let int = parseInt(a[1]);
-    let year = parseInt(a[2])
-    let answerTemp = ""
+    let year = parseInt(a[2]);
+    let answerTemp = "";
     for (let i = 0; i < month; i++) {
       int = int + 1;
       if (int > 12) {
         int = 1;
         year = parseInt(a[2]) + 1;
-        answerTemp = `${familyData.dueDate}/${int}/${year}`
+        answerTemp = `${familyData.dueDate}/${int}/${year}`;
       }
-      answerTemp = `${familyData.dueDate}/${int}/${year}`
+      answerTemp = `${familyData.dueDate}/${int}/${year}`;
     }
-    setExpireDate(answerTemp)
+    setExpireDate(answerTemp);
   };
   const deCount = () => {
     setMonth(month - 1);
@@ -80,28 +83,48 @@ function Card2({user, familyID, familyData}) {
       expireDate,
       familyID,
       img_src,
-    }).then(res => {
+    }).then(async (res) => {
       if (res.status) {
-        Swal.fire("ดำเนินการเรียบร้อย").then(res => window.location.reload());
+        // familyName, memberName, price, month, nextDate, alertId
+        Swal.fire("ดำเนินการเรียบร้อย").then((res) => {
+          window.location.reload();
+        });
       } else {
-        Swal.fire("เกิดข้อผิดพลาด").then(res => window.location.reload());
+        Swal.fire("เกิดข้อผิดพลาด").then((res) => window.location.reload());
       }
     });
   };
-  const confirm = isCustom => {
+  const confirm = (isCustom) => {
     if (isCustom) {
       Swal.fire({
         title: `เพิ่มเดือน ${month} เดือน ให้กับ ${user.name} ใช่หรือไม่`,
         icon: "question",
         showCancelButton: true,
         confirmButtonText: "Save",
-      }).then(result => {
+      }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-          setData().then(res => {
+          setData().then((res) => {
             Swal.fire("ดำเนินการเรียบร้อย").then(() => {
-              window.location.reload();
-              setMonth(0);
+              console.log({
+                familyName: familyData.familyName,
+                memberName: user.name,
+                price: prices[priceIndexSelect].price,
+                month: prices[priceIndexSelect].month,
+                nextDate: expireDate,
+                alertId: user._id,
+              });
+              pushConfirmPayment({
+                familyName: familyData.familyName,
+                memberName: user.name,
+                price: prices[priceIndexSelect].price,
+                month: prices[priceIndexSelect].month,
+                nextDate: expireDate,
+                alertId: user._id,
+              }).then((res) => {
+                // window.location.reload();
+                setMonth(0);
+              });
             });
           });
         } else if (result.isDenied) {
@@ -115,14 +138,23 @@ function Card2({user, familyID, familyData}) {
         icon: "question",
         showCancelButton: true,
         confirmButtonText: "Save",
-      }).then(result => {
+      }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-          setData().then(res => {
+          setData().then((res) => {
             Swal.fire("ดำเนินการเรียบร้อย").then(() => {
-              window.location.reload();
-              setMonth(0);
-              setPriceIndexSelect(99);
+              pushConfirmPayment({
+                familyName: familyData.familyName,
+                memberName: user.name,
+                price: prices[priceIndexSelect].price,
+                month: prices[priceIndexSelect].month,
+                nextDate: expireDate,
+                alertId: user._id,
+              }).then((res) => {
+                window.location.reload();
+                setMonth(0);
+                setPriceIndexSelect(99);
+              });
             });
           });
         } else if (result.isDenied) {
@@ -159,13 +191,13 @@ function Card2({user, familyID, familyData}) {
         <div className="flex justify-between">
           <p
             className="text-black font-light text-left"
-            style={{fontSize: "18px"}}
+            style={{ fontSize: "18px" }}
           >
             จ่ายล่าสุด :
           </p>
           <p
             className="text-black font-light text-left"
-            style={{fontSize: "18px"}}
+            style={{ fontSize: "18px" }}
           >
             {user.lastDate}
           </p>
@@ -173,13 +205,13 @@ function Card2({user, familyID, familyData}) {
         <div className="flex justify-between">
           <p
             className="text-black font-light text-left"
-            style={{fontSize: "18px"}}
+            style={{ fontSize: "18px" }}
           >
             หมดอายุ :
           </p>
           <p
             className="text-black font-light text-left"
-            style={{fontSize: "18px"}}
+            style={{ fontSize: "18px" }}
           >
             {expireDate}
           </p>
@@ -250,13 +282,13 @@ function Card2({user, familyID, familyData}) {
         <div className="flex justify-between">
           <p
             className="text-black font-light text-left"
-            style={{fontSize: "18px"}}
+            style={{ fontSize: "18px" }}
           >
             จ่ายล่าสุด :
           </p>
           <p
             className="text-black font-light text-left"
-            style={{fontSize: "18px"}}
+            style={{ fontSize: "18px" }}
           >
             {user.lastDate}
           </p>
@@ -264,13 +296,13 @@ function Card2({user, familyID, familyData}) {
         <div className="flex justify-between">
           <p
             className="text-black font-light text-left"
-            style={{fontSize: "18px"}}
+            style={{ fontSize: "18px" }}
           >
             หมดอายุ :
           </p>
           <p
             className="text-black font-light text-left"
-            style={{fontSize: "18px"}}
+            style={{ fontSize: "18px" }}
           >
             {expireDate}
           </p>
@@ -319,7 +351,7 @@ function Card2({user, familyID, familyData}) {
           <input
             className="w-full h-10 rounded-md p-2"
             defaultValue={name}
-            onChange={e => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div className="mb-4">
@@ -327,7 +359,7 @@ function Card2({user, familyID, familyData}) {
           <input
             className="w-full h-10 rounded-md p-2"
             defaultValue={img_src}
-            onChange={e => setImg_src(e.target.value)}
+            onChange={(e) => setImg_src(e.target.value)}
           />
         </div>
       </div>

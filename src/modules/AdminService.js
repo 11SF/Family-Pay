@@ -1,8 +1,9 @@
 import axios from "axios";
-import {getHeaderAuth, getUserData} from "./AuthService";
+import { getHeaderAuth, getUserData } from "./AuthService";
 
 const BASE_URL = "https://mysitebackend.herokuapp.com/api/v2";
-const fetchFamily = async token => {
+// const BASE_URL = "https://5f19-171-6-156-226.ap.ngrok.io/api/v2";
+const fetchFamily = async (token) => {
   // let payload = {
   //   token,
   //   hostEmail,
@@ -12,7 +13,7 @@ const fetchFamily = async token => {
     return result.data;
   }
 };
-const fetchFamilyByEmail = async hostEmail => {
+const fetchFamilyByEmail = async (hostEmail) => {
   let result = await axios.get(
     BASE_URL + "/member/get/family?hostEmail=" + hostEmail
   );
@@ -35,11 +36,11 @@ const createFamily = async (familyName, platform, dueDate, ppNumber) => {
       headers: getHeaderAuth(),
     }
   );
-  console.log(result);
+  // console.log(result);
   return result.data;
 };
 
-const getTokenByEmail = async token => {
+const getTokenByEmail = async (token) => {
   let result = await fetchFamily(token);
 
   if (result.hostEmail !== getUserData().sub) {
@@ -54,8 +55,8 @@ const getTokenByEmail = async token => {
   };
 };
 
-const setMonthAPI = async payload => {
-  let {id, lastDate, expireDate, familyID} = payload;
+const setMonthAPI = async (payload) => {
+  let { id, lastDate, expireDate, familyID } = payload;
   let result = await axios.put(
     BASE_URL + `/admin/members/edit/date/${id}`,
     {
@@ -70,8 +71,8 @@ const setMonthAPI = async payload => {
   return result.data;
 };
 
-const editMember = async payload => {
-  let {id, name, lastDate, expireDate, img_src, familyID} = payload;
+const editMember = async (payload) => {
+  let { id, name, lastDate, expireDate, img_src, familyID } = payload;
   let result = await axios.put(
     BASE_URL + `/admin/members/edit/${id}`,
     {
@@ -88,8 +89,8 @@ const editMember = async payload => {
   return result.data;
 };
 
-const addPriceAPI = async payload => {
-  const {price, month, img_src, familyID} = payload;
+const addPriceAPI = async (payload) => {
+  const { price, month, img_src, familyID } = payload;
 
   let result = await axios.post(
     BASE_URL + "/admin/family/price/add",
@@ -107,9 +108,8 @@ const addPriceAPI = async payload => {
   return result.data;
 };
 
-const editPriceAPI = async payload => {
-  const {price, month, img_src, familyID, id} = payload;
-  console.log(payload);
+const editPriceAPI = async (payload) => {
+  const { price, month, img_src, familyID, id } = payload;
 
   let result = await axios.put(
     BASE_URL + "/admin/family/price/edit/" + id,
@@ -127,9 +127,9 @@ const editPriceAPI = async payload => {
   return result.data;
 };
 
-const deletePriceAPI = async payload => {
-  const {familyID, id} = payload;
-  console.log(payload);
+const deletePriceAPI = async (payload) => {
+  const { familyID, id } = payload;
+  // console.log(payload);
 
   let result = await axios.put(
     BASE_URL + "/admin/family/price/delete/" + id,
@@ -144,8 +144,8 @@ const deletePriceAPI = async payload => {
   return result.data;
 };
 
-const addMemberAPI = async payload => {
-  const {name, lastDate, expireDate, img_src, familyID} = payload;
+const addMemberAPI = async (payload) => {
+  const { name, lastDate, expireDate, img_src, familyID } = payload;
   let result = await axios.post(
     BASE_URL + "/admin/members/add",
     {
@@ -155,6 +155,37 @@ const addMemberAPI = async payload => {
       img_src,
       familyID,
     },
+    {
+      headers: getHeaderAuth(),
+    }
+  );
+  return result.data;
+};
+
+const sendNotification = async (payload) => {
+  const { familyID } = payload;
+  // console.log(familyID);
+
+  let result = await axios.post(
+    BASE_URL + `/admin/pushNotification?token=${familyID}`,
+    {},
+    {
+      headers: getHeaderAuth(),
+    }
+  );
+  console.log(result);
+  if (result.status === 200) {
+    sessionStorage.setItem("lastSendMessage", new Date());
+  }
+  return result.data;
+};
+
+const pushConfirmPayment = async (payload) => {
+  let { familyName, memberName, price, month, nextDate, alertId } = payload;
+  let result = await axios.post(
+    BASE_URL +
+      `/admin/pushConfirmPayment?familyName=${familyName}&memberName=${memberName}&price=${price}&month=${month}&nextDate=${nextDate}&alertId=${alertId}`,
+    {},
     {
       headers: getHeaderAuth(),
     }
@@ -173,4 +204,6 @@ export {
   editPriceAPI,
   deletePriceAPI,
   addMemberAPI,
+  sendNotification,
+  pushConfirmPayment
 };
