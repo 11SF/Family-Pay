@@ -1,21 +1,28 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import HomeAdmin from "../components/Admin/HomeAdmin";
-import {getUserData, logout} from "../modules/AuthService";
-import {fetchFamilyByEmail, getTokenByEmail} from "../modules/AdminService";
-import {useParams} from "react-router";
+import { getUserData, logout } from "../modules/AuthService";
+import { fetchFamilyByEmail, getTokenByEmail } from "../modules/AdminService";
+import { useParams } from "react-router";
 import FamilyDetail from "../components/Admin/FamilyDetail";
 import ManageMembers from "../components/Admin/ManageMembers";
 import ManagePrice from "../components/Admin/ManagePrice";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const menuList = ["หน้าแรก", "เพิ่มสมาชิก", "ข้อมูลครอบครัว", "ข้อมูลราคา"];
+const menuList = [
+  "หน้าแรก",
+  "เพิ่มสมาชิก",
+  "ข้อมูลครอบครัว",
+  "ข้อมูลราคา",
+  "ประวัติการทำรายการ",
+  "สรุปข้อมูล",
+];
 
 function AdminPage() {
   const [menuIndex, setMenuIndex] = useState(0);
   const [familyData, setFamilyData] = useState(null);
   const [isLoading, setLoading] = useState(true);
   const [msg, setMsg] = useState("");
-  const {token} = useParams();
+  const { token } = useParams();
 
   const fetchData = async () => {
     let result = await getTokenByEmail(token);
@@ -49,6 +56,10 @@ function AdminPage() {
         );
       case 3:
         return <ManagePrice familyData={familyData} />;
+      case 4:
+        return "ประวัติการทำรายการ";
+      case 5:
+        return "สรุปข้อมูล";
 
       default:
         return <HomeAdmin familyData={familyData} />;
