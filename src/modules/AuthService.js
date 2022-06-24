@@ -1,6 +1,7 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-const BASE_URL = "https://mysitebackend.herokuapp.com/api/auth";
+const BASE_URL = "https://api.11sf.site/api/auth";
+// const BASE_URL = "https://mysitebackend.herokuapp.com/api/auth";
 // const BASE_URL = "https://5f19-171-6-156-226.ap.ngrok.io/api/v2";
 
 
