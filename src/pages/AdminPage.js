@@ -7,6 +7,7 @@ import FamilyDetail from "../components/Admin/FamilyDetail";
 import ManageMembers from "../components/Admin/ManageMembers";
 import ManagePrice from "../components/Admin/ManagePrice";
 import { Link } from "react-router-dom";
+import TransactionTable from "../components/Admin/TransactionTable";
 
 const menuList = [
   "หน้าแรก",
@@ -57,7 +58,7 @@ function AdminPage() {
       case 3:
         return <ManagePrice familyData={familyData} />;
       case 4:
-        return "ประวัติการทำรายการ";
+        return <TransactionTable familyID={familyData.familyID} />;
       case 5:
         return "สรุปข้อมูล";
 
