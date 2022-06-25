@@ -1,9 +1,9 @@
 import axios from "axios";
 import { getHeaderAuth, getUserData } from "./AuthService";
 
-const BASE_URL = "https://api.11sf.site/api/v2";
+const BASE_URL = "https://cloud.11sf.site/api/v2";
 // const BASE_URL = "https://mysitebackend.herokuapp.com/api/v2";
-const BASE_URL_LOG_SERVER = "http://35.89.118.223:3000/fp";
+const BASE_URL_LOG_SERVER = "https://cloud.11sf.site/fp";
 // const BASE_URL = "https://5f19-171-6-156-226.ap.ngrok.io/api/v2";
 const fetchFamily = async (token) => {
   // let payload = {
