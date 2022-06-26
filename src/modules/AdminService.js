@@ -200,9 +200,6 @@ const fetchTransactions = async (payload) => {
   let result = await axios.get(
     BASE_URL_LOG_SERVER + `/transaction/${familyID}`
   );
-  if (result.message) {
-    return [{ message: "ไม่มีข้อมูล" }];
-  }
   return result;
 };
 

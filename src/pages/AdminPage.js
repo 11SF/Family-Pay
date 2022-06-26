@@ -58,7 +58,7 @@ function AdminPage() {
       case 3:
         return <ManagePrice familyData={familyData} />;
       case 4:
-        return <TransactionTable familyID={familyData.familyID} />;
+        return <TransactionTable familyID={familyData.token} />;
       case 5:
         return "สรุปข้อมูล";
 
