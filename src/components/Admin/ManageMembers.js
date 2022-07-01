@@ -29,11 +29,11 @@ function ManageMembers({familyID}) {
     });
   };
   return (
-    <div className="container">
+    <div className="container mx-auto mt-12">
       <div className="w-full">
         <p className="text-black text-5xl py-10">เพิ่มสมาชิก</p>
       </div>
-      <div className="w-1/2 bg-gray-200 rounded-lg">
+      <div className="w-1/2 bg-gray-200 mx-auto rounded-lg">
         <div className="bg-gray-200 w-2/3 h-auto mx-auto mt-3 rounded-md p-4">
           <p className="text-black text-xs text-left mb-1">ชื่อผู้ใช้</p>
           <input

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import {createFamily} from "../modules/AdminService";
-import {getUserData} from "../modules/AuthService";
+import {createFamily} from "../../modules/AdminService";
+import {getUserData} from "../../modules/AuthService";
 
 function AdminCreateFamily() {
   const [familyName, setFamilyName] = useState("");

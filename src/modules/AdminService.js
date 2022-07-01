@@ -1,4 +1,5 @@
 import axios from "axios";
+import ForbiddenPage from "../pages/ForbiddenPage";
 import { getHeaderAuth, getUserData } from "./AuthService";
 
 const BASE_URL = "https://cloud.11sf.site/api/v2";
@@ -12,6 +13,10 @@ const fetchFamily = async (token) => {
   // };
   let result = await axios.get(BASE_URL + "/member/get/family?token=" + token);
   if (result.status) {
+    console.log(result);
+    if(result.data.msg) {
+      return window.location.pathname = "/forbidden"
+    }
     return result.data;
   }
 };
@@ -38,7 +43,7 @@ const createFamily = async (familyName, platform, dueDate, ppNumber) => {
       headers: getHeaderAuth(),
     }
   );
-  // console.log(result);
+  console.log(result);
   return result.data;
 };
 
@@ -186,7 +191,7 @@ const pushConfirmPayment = async (payload) => {
   let { familyName, memberName, price, month, nextDate, alertId } = payload;
   let result = await axios.post(
     BASE_URL +
-      `/admin/pushConfirmPayment?familyName=${familyName}&memberName=${memberName}&price=${price}&month=${month}&nextDate=${nextDate}&alertId=${alertId}`,
+      `/line/pushConfirmPayment?familyName=${familyName}&memberName=${memberName}&price=${price}&month=${month}&nextDate=${nextDate}&alertId=${alertId}`,
     {},
     {
       headers: getHeaderAuth(),
@@ -196,12 +201,16 @@ const pushConfirmPayment = async (payload) => {
 };
 
 const fetchTransactions = async (payload) => {
-  let { familyID } = payload;
+  let { token } = payload;
   let result = await axios.get(
-    BASE_URL_LOG_SERVER + `/transaction/${familyID}`
+    BASE_URL_LOG_SERVER + `/transaction/${token}`
   );
   return result;
 };
+
+const addTransaction = async (payload) => {
+  // let 
+}
 
 export {
   fetchFamily,

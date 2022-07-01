@@ -27,7 +27,7 @@ function Login() {
 
       goLogin(email, password).then(res => {
         setLoading(false);
-        console.log(res);
+        // console.log(res);
         if (res) {
           window.location.reload();
         } else {

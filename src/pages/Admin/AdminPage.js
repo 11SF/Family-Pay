@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import HomeAdmin from "../components/Admin/HomeAdmin";
-import { getUserData, logout } from "../modules/AuthService";
-import { fetchFamilyByEmail, getTokenByEmail } from "../modules/AdminService";
+import HomeAdmin from "../../components/Admin/HomeAdmin";
+import { getUserData, logout } from "../../modules/AuthService";
+import { fetchFamilyByEmail, getTokenByEmail } from "../../modules/AdminService";
 import { useParams } from "react-router";
-import FamilyDetail from "../components/Admin/FamilyDetail";
-import ManageMembers from "../components/Admin/ManageMembers";
-import ManagePrice from "../components/Admin/ManagePrice";
+import FamilyDetail from "../../components/Admin/FamilyDetail";
+import ManageMembers from "../../components/Admin/ManageMembers";
+import ManagePrice from "../../components/Admin/ManagePrice";
 import { Link } from "react-router-dom";
-import TransactionTable from "../components/Admin/TransactionTable";
+import TransactionTable from "../../components/Admin/TransactionTable";
 
 const menuList = [
   "หน้าแรก",
