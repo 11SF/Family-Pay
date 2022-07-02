@@ -17,6 +17,7 @@ import ManagePrice from "./pages/Admin/ManagePrice";
 import TransactionView from "./pages/Admin/TransactionView";
 import FamilyDetail from "./pages/Admin/FamilyDetail";
 import ForbiddenPage from "./pages/ForbiddenPage";
+import FamilyInfo from "./pages/Admin/FamilyInfo";
 function App() {
   Aos.init();
   return (
@@ -64,9 +65,14 @@ function App() {
           {isLogin() ? <TransactionView /> : <Redirect to="/login"></Redirect>}
         </Route>
 
+        <Route path="/admin/:token/info" exact>
+          {isLogin() ? <FamilyInfo /> : <Redirect to="/login"></Redirect>}
+        </Route>
+
         <Route path="/admin/selectfamily" exact>
           {isLogin() ? <AdminSelectPage /> : <Redirect to="/login"></Redirect>}
         </Route>
+        
         <Route path="/admin/createfamily" exact>
           {isLogin() ? (
             <AdminCreateFamily />
