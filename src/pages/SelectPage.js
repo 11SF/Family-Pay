@@ -44,16 +44,16 @@ function SelectPage() {
       token = [];
     }
 
-    // console.log(checkDup);
+    // //console.log(checkDup);
     if (checkDup.length > 0) {
-      console.log("Is Dupplicate!!!");
+      //console.log("Is Dupplicate!!!");
       setMsgAddPage("มี Token นี้อยู่แล้ว!!");
     } else {
       let res = await fetchFamily(tokenInput);
       if (res._id) {
         token.push(tokenInput);
         setFamilies([res, ...families]);
-        // console.log("log " + token);
+        // //console.log("log " + token);
         localStorage.setItem("FamilyToken", JSON.stringify(token));
         setTokens(JSON.parse(localStorage.getItem("FamilyToken")));
         setClickAddfamily(false);

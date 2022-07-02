@@ -25,7 +25,7 @@ export default function ManageMember() {
     if (familyData) {
       setLoading(false);
     }
-    console.log(familyData);
+    //console.log(familyData);
   }, [familyData]);
 
   return (

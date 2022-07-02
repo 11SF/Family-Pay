@@ -18,7 +18,7 @@ function AdminSelectPage() {
     let result = await fetchFamilyByEmail(getUserData().sub);
     //   result = result.filter(value => value._id);
     setFamilies(result);
-    console.log(families);
+    //console.log(families);
     setLoading(false);
   };
 

@@ -22,7 +22,7 @@ export default function HomeAdmin() {
     if (familyData) {
       setLoading(false);
     }
-    console.log(familyData);
+    // //console.log(familyData);
   }, [familyData]);
 
   return (

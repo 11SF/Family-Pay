@@ -43,7 +43,7 @@ export default function SpotifyPage() {
 
   useEffect(() => {
     if (prices.length !== 0) {
-      console.log(prices);
+      //console.log(prices);
       setLoading2(false);
     }
   }, [prices]);

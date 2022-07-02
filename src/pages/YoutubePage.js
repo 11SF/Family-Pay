@@ -38,7 +38,7 @@ export default function YoutubeyPage({user}) {
 
   useEffect(() => {
     if (prices.length !== 0) {
-      console.log(prices);
+      //console.log(prices);
       setLoading2(false);
     }
   }, [prices]);

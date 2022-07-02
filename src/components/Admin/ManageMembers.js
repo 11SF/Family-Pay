@@ -9,13 +9,13 @@ function ManageMembers({familyID}) {
     date.getFullYear() + 543
   }`;
 
-//   console.log(draftDate);
+//   //console.log(draftDate);
 
   const handleLogIn = () => {
     addMemberAPI({
       name,
-      lastDate: draftDate,
-      expireDate: draftDate,
+      lastDate: date,
+      expireDate: date,
       img_src,
       familyID
     }).then(res => {
