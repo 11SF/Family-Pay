@@ -3,7 +3,7 @@ import React, {useState} from "react";
 function FamilyDetail({familyName, token}) {
   const [familyNameInput, setFamilyNameInput] = useState(familyName);
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto mt-12">
       <div className="w-full mt-20 p-10 bg-gray-100 rounded-lg">
         <p className="text-black">ข้อมูลครอบครัว</p>
         <div className="w-1/2 mx-auto">
