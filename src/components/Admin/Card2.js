@@ -4,22 +4,28 @@ import {
   editMember,
   setMonthAPI,
   pushConfirmPayment,
+  addTransaction,
 } from "../../modules/AdminService";
+import {
+  CONVERT_STR_TO_DATE_TYPE,
+  GET_DATE_FORMAT,
+} from "../../modules/ConvertFunc";
 
 function Card2({ user, familyID, familyData }) {
   const [month, setMonth] = useState(0);
   const [name, setName] = useState(user.name);
   const [img_src, setImg_src] = useState(user.img_src);
   const [expireDate, setExpireDate] = useState(user.expireDate);
-  const [tempExpireDate] = useState(user.expireDate);
+  const [tempExpireDate, setTempExpireDate] = useState(user.expireDate);
   const [edit, setEdit] = useState(false);
   const [prices] = useState(familyData.prices);
   const [priceIndexSelect, setPriceIndexSelect] = useState(99);
   const [isCustomEdit, setCustomEdit] = useState(false);
+
   const setData = async () => {
     return await setMonthAPI({
       id: user._id,
-      lastDate: getNowDate(),
+      lastDate: new Date(),
       expireDate,
       familyID,
     });
@@ -46,6 +52,32 @@ function Card2({ user, familyID, familyData }) {
     }
     setExpireDate(`${familyData.dueDate}/${int}/${a[2]}`);
   };
+  const getNewDate = (strDate, numberOfMonth) => {
+    strDate = CONVERT_STR_TO_DATE_TYPE(strDate);
+    setMonth(numberOfMonth);
+    let newDate = new Date(
+      strDate.setMonth(strDate.getMonth() + parseInt(numberOfMonth))
+    );
+    newDate = new Date(strDate.setDate(familyData.dueDate));
+    setExpireDate(newDate);
+  };
+
+  // const convertToDateType = (strDate) => {
+  //   if (strDate.length <= 12) {
+  //     strDate = strDate.split("/");
+  //     strDate = `${strDate[1]}/${strDate[0]}/${parseInt(strDate[2]) - 543}`;
+  //     return new Date(strDate);
+  //   }
+  //   return strDate
+  // };
+  // const getDateFormat = (strDate) => {
+  //   if (strDate.length <= 12) {
+  //     // convertDateType(strDate);
+  //     return strDate;
+  //   }
+  //   let date1 = new Date(strDate);
+  //   return date1.toLocaleDateString("th-TH");
+  // };
   const pushCountPrice = (month) => {
     setMonth(month);
     let a = tempExpireDate.split("/");
@@ -74,6 +106,19 @@ function Card2({ user, familyID, familyData }) {
       return;
     }
     setExpireDate(`${familyData.dueDate}/${int}/${a[2]}`);
+  };
+  const getDateOverdue = (oldDate) => {
+    oldDate = CONVERT_STR_TO_DATE_TYPE(oldDate)
+    let currentDate = new Date();
+
+    let diffTime = currentDate - oldDate;
+    let diffDays = Math.ceil(diffTime / (1000 * 3600 * 24)) - 1;
+
+    if (diffDays > 0) {
+      return diffDays;
+    } else {
+      return 0;
+    }
   };
   const save = () => {
     editMember({
@@ -106,14 +151,14 @@ function Card2({ user, familyID, familyData }) {
         if (result.isConfirmed) {
           setData().then((res) => {
             Swal.fire("ดำเนินการเรียบร้อย").then(() => {
-              console.log({
-                familyName: familyData.familyName,
-                memberName: user.name,
-                price: prices[priceIndexSelect].price,
-                month: prices[priceIndexSelect].month,
-                nextDate: expireDate,
-                alertId: user._id,
-              });
+              // //console.log({
+              //   familyName: familyData.familyName,
+              //   memberName: user.name,
+              //   price: prices[priceIndexSelect].price,
+              //   month: prices[priceIndexSelect].month,
+              //   nextDate: expireDate,
+              //   alertId: user._id,
+              // });
               pushConfirmPayment({
                 familyName: familyData.familyName,
                 memberName: user.name,
@@ -121,9 +166,21 @@ function Card2({ user, familyID, familyData }) {
                 month: prices[priceIndexSelect].month,
                 nextDate: expireDate,
                 alertId: user._id,
-              }).then((res) => {
-                // window.location.reload();
-                setMonth(0);
+              }).then(() => {
+                addTransaction({
+                  member_id: user._id,
+                  name: user.name,
+                  family_id: familyData.token,
+                  family_name: familyData.familyName,
+                  price: prices[priceIndexSelect].price,
+                  month: prices[priceIndexSelect].month,
+                  date_overdue: getDateOverdue(tempExpireDate),
+                  old_ecpire_date: CONVERT_STR_TO_DATE_TYPE(tempExpireDate),
+                  new_expire_date: expireDate,
+                }).then(() => {
+                  window.location.reload();
+                  setMonth(0);
+                });
               });
             });
           });
@@ -150,10 +207,22 @@ function Card2({ user, familyID, familyData }) {
                 month: prices[priceIndexSelect].month,
                 nextDate: expireDate,
                 alertId: user._id,
-              }).then((res) => {
-                window.location.reload();
-                setMonth(0);
-                setPriceIndexSelect(99);
+              }).then(() => {
+                addTransaction({
+                  member_id: user._id,
+                  name: user.name,
+                  family_id: familyData.token,
+                  family_name: familyData.familyName,
+                  price: prices[priceIndexSelect].price,
+                  month: prices[priceIndexSelect].month,
+                  date_overdue: getDateOverdue(tempExpireDate),
+                  old_expire_date: CONVERT_STR_TO_DATE_TYPE(tempExpireDate),
+                  new_expire_date: expireDate,
+                }).then(() => {
+                  window.location.reload();
+                  setMonth(0);
+                  setPriceIndexSelect(99);
+                });
               });
             });
           });
@@ -199,7 +268,7 @@ function Card2({ user, familyID, familyData }) {
             className="text-black font-light text-left"
             style={{ fontSize: "18px" }}
           >
-            {user.lastDate}
+            {GET_DATE_FORMAT(user.lastDate, "noTime")}
           </p>
         </div>
         <div className="flex justify-between">
@@ -213,7 +282,7 @@ function Card2({ user, familyID, familyData }) {
             className="text-black font-light text-left"
             style={{ fontSize: "18px" }}
           >
-            {expireDate}
+            {GET_DATE_FORMAT(expireDate, "noTime")}
           </p>
         </div>
       </div>
@@ -232,7 +301,8 @@ function Card2({ user, familyID, familyData }) {
                 setPriceIndexSelect(index);
                 // setMonth(price.month);
                 // setExpireDate(tempExpireDate);
-                pushCountPrice(price.month);
+                // pushCountPrice(price.month);
+                getNewDate(tempExpireDate, price.month, false);
               }}
               key={price._id}
             >
@@ -241,17 +311,17 @@ function Card2({ user, familyID, familyData }) {
           ))}
           <button
             className="text-sm rounded-md text-white py-2 bg-green-500  hover:bg-green-600"
-            onClick={() => confirm(false)}
+            onClick={() => (priceIndexSelect !== 99 ? confirm(false) : null)}
           >
             ยืนยัน
           </button>
         </div>
-        <button
+        {/* <button
           className="text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-blue-500 hover:bg-blue-600"
           onClick={() => setCustomEdit(true)}
         >
           กำหนดเอง
-        </button>
+        </button> */}
       </div>
     </>
   );
@@ -290,7 +360,7 @@ function Card2({ user, familyID, familyData }) {
             className="text-black font-light text-left"
             style={{ fontSize: "18px" }}
           >
-            {user.lastDate}
+            {GET_DATE_FORMAT(user.lastDate, "noTime")}
           </p>
         </div>
         <div className="flex justify-between">
@@ -304,7 +374,7 @@ function Card2({ user, familyID, familyData }) {
             className="text-black font-light text-left"
             style={{ fontSize: "18px" }}
           >
-            {expireDate}
+            {GET_DATE_FORMAT(expireDate, "noTime")}
           </p>
         </div>
       </div>
@@ -313,7 +383,9 @@ function Card2({ user, familyID, familyData }) {
         <div className="flex w-4/6">
           <button
             className="p-2 rounded-full w-10 h-10 text-black hover:bg-red-50"
-            onClick={() => (month > 0 ? deCount() : null)}
+            onClick={() =>
+              month > 0 ? getNewDate(tempExpireDate, -1, true) : null
+            }
           >
             -
           </button>
@@ -322,7 +394,9 @@ function Card2({ user, familyID, familyData }) {
           </p>
           <button
             className="bg-blue-600 p-2 rounded-full w-10 h-10 text-white hover:bg-blue-800"
-            onClick={() => pushCount()}
+            onClick={() => {
+              getNewDate(tempExpireDate, 1, true);
+            }}
           >
             +
           </button>
@@ -394,7 +468,8 @@ function Card2({ user, familyID, familyData }) {
         />
       </div>
       <div className="p-3">
-        {!edit ? (isCustomEdit ? customCard() : normalCard()) : editCard()}
+        {!edit ? normalCard() : editCard()}
+        {/* {!edit ? (isCustomEdit ? customCard() : normalCard()) : editCard()} */}
       </div>
     </div>
   );

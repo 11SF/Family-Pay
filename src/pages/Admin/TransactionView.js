@@ -15,9 +15,10 @@ export default function TransactionView() {
   const fetchData = async () => {
     const res = await fetchTransactions({token});
     if (res.status === 200) {
-      // console.log(res);
+      // //console.log(res);
       if (!res.data.message) {
-        setData(res.data);
+        let temp = res.data
+        setData(temp.reverse());
         return setEmpty(false);
       }
     }
@@ -27,8 +28,8 @@ export default function TransactionView() {
   }, []);
 
   useEffect(() => {
-    console.log("data :");
-    console.log(data);
+    //console.log("data :");
+    //console.log(data);
     setLoading(false);
   }, [data]);
 

@@ -2,17 +2,20 @@ import { React, useEffect, useState } from "react";
 
 import { useTable } from "react-table";
 import { fetchTransactions } from "../../modules/AdminService";
+import { GET_DATE_FORMAT } from "../../modules/ConvertFunc";
 
 export default function TransactionTable({ transactions }) {
   const columns = [
     "no.",
+    "วันที่ทำรายการ",
     "ชื่อ",
     "ราคาจ่าย",
     "จำนวนเดือนที่ได้",
-    "จ่ายเมื่อ",
+    "วันหมดอายุเดิม",
+    "วันหมดอายุใหม่",
     "จำนวนวันที่จ่ายเกินกำหนด",
     "สถานะ",
-    "Action",
+    "Action"
   ];
 
   const [data, setData] = useState([
@@ -74,11 +77,6 @@ export default function TransactionTable({ transactions }) {
     },
   ]);
 
-  const dateFormat = (d) => {
-    const date = new Date(d);
-    return `${date.getDate()}-${date.getMonth()}-${date.getFullYear() + 543}`;
-  };
-
   const getStatus = (status) => {
     if (status === "active") {
       return {
@@ -117,7 +115,7 @@ export default function TransactionTable({ transactions }) {
   // }, []);
 
   // useEffect(() => {
-  //   console.log(data);
+  //   //console.log(data);
   //   setLoading(false);
   // }, [data]);
 
@@ -183,6 +181,7 @@ export default function TransactionTable({ transactions }) {
   //     </div>
   //   );
   // };
+
   return (
     <div className="container mt-12">
       <p className="text-black text-5xl py-10">ประวัติการทำรายการ</p>
@@ -203,12 +202,19 @@ export default function TransactionTable({ transactions }) {
           {transactions.map((e, index) => (
             <tr key={index}>
               <td className={`${getTableRowClass(index)}`}>{index + 1}</td>
+              <td className={`${getTableRowClass(index)}`}>
+                {GET_DATE_FORMAT(e.CreatedAt, "getTime")}
+              </td>
               <td className={`${getTableRowClass(index)}`}>{e.name}</td>
               <td className={`${getTableRowClass(index)}`}>{e.price}</td>
               <td className={`${getTableRowClass(index)}`}>{e.month}</td>
               <td className={`${getTableRowClass(index)}`}>
-                {dateFormat(e.CreatedAt)}
+                {GET_DATE_FORMAT(e.old_expire_date, "noTime")}
               </td>
+              <td className={`${getTableRowClass(index)}`}>
+                {GET_DATE_FORMAT(e.new_expire_date, "noTime")}
+              </td>
+
               <td className={`${getTableRowClass(index)}`}>{e.date_overdue}</td>
               <td
                 className={`${getTableRowClass(index)} ${
@@ -224,7 +230,7 @@ export default function TransactionTable({ transactions }) {
                       getStatus(e.status).actionBtnClass
                     } text-white py-1 px-4 rounded`}
                   >
-                    ยกเลิก
+                    ปุ่มอะไรสักอย่าง
                   </button>
                 </div>
               </td>
@@ -232,8 +238,7 @@ export default function TransactionTable({ transactions }) {
           ))}
         </tbody>
       </table>
-      <div className="w-full h-14 bg-gray-200">
-      </div>
+      <div className="w-full h-14 bg-gray-200"></div>
     </div>
   );
   // return <div>{isLoading ? <div>กำลังโหลด</div> : dataTable()}</div>;
