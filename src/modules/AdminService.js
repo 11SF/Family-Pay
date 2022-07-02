@@ -181,7 +181,7 @@ const sendNotification = async (payload) => {
   // //console.log(familyID);
 
   let result = await axios.post(
-    BASE_URL + `/admin/pushNotification?token=${familyID}`,
+    BASE_URL + `/line/pushNotification?token=${familyID}`,
     {},
     {
       headers: getHeaderAuth(),
@@ -189,22 +189,29 @@ const sendNotification = async (payload) => {
   );
   //console.log(result);
   if (result.status === 200) {
-    sessionStorage.setItem("lastSendMessage", new Date());
+    // let arr = []
+    // arr.filter((item) => {
+
+    // })
+    sessionStorage.setItem("lastSendMessage", {
+      family: familyID,
+      date: new Date(),
+    });
   }
   return result.data;
 };
 
 const pushConfirmPayment = async (payload) => {
-  // let { familyName, memberName, price, month, nextDate, alertId } = payload;
-  // let result = await axios.post(
-  //   BASE_URL +
-  //     `/line/pushConfirmPayment?familyName=${familyName}&memberName=${memberName}&price=${price}&month=${month}&nextDate=${nextDate}&alertId=${alertId}`,
-  //   {},
-  //   {
-  //     headers: getHeaderAuth(),
-  //   }
-  // );
-  // return result.data;
+  let { familyName, memberName, price, month, nextDate, alertId } = payload;
+  let result = await axios.post(
+    BASE_URL +
+      `/line/pushConfirmPayment?familyName=${familyName}&memberName=${memberName}&price=${price}&month=${month}&nextDate=${nextDate}&alertId=${alertId}`,
+    {},
+    {
+      headers: getHeaderAuth(),
+    }
+  );
+  return result.data;
 };
 
 const fetchTransactions = async (payload) => {
@@ -214,8 +221,17 @@ const fetchTransactions = async (payload) => {
 };
 
 const addTransaction = async (payload) => {
-  let { member_id, name, family_id, family_name, price, month, date_overdue, old_expire_date, new_expire_date } =
-    payload;
+  let {
+    member_id,
+    name,
+    family_id,
+    family_name,
+    price,
+    month,
+    date_overdue,
+    old_expire_date,
+    new_expire_date,
+  } = payload;
 
   let result = await axios.post(BASE_URL_LOG_SERVER + `/transaction`, {
     member_id,
@@ -227,7 +243,7 @@ const addTransaction = async (payload) => {
     date_overdue,
     status: "active",
     old_expire_date,
-    new_expire_date
+    new_expire_date,
   });
 
   return result.status;

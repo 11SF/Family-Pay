@@ -3,7 +3,7 @@ import Card2 from "./Card2";
 import { sendNotification } from "../../modules/AdminService";
 
 function check2hour(time) {
-  const date = new Date(time);
+  const date = new Date(time.date);
   const now = new Date();
   const diff = now.getTime() - date.getTime();
   const diffMinutes = Math.floor(diff / 1000 / 60);
@@ -16,7 +16,8 @@ function check2hour(time) {
 function HomeAdmin({ familyData }) {
   const [membersData] = useState(familyData.members);
   const [openSendMsg, setOpenSendMsg] = useState(
-    check2hour(sessionStorage.getItem("lastSendMessage"))
+    // check2hour(sessionStorage.getItem("lastSendMessage"))
+    true
   );
   const handleSendMsg = () => {
     sendNotification({ familyID: familyData.token });
