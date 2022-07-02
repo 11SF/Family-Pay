@@ -1,8 +1,14 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+
+//Production
 const BASE_URL = "https://cloud.11sf.site/api/auth";
+
+//Backup Production
 // const BASE_URL = "https://mysitebackend.herokuapp.com/api/auth";
-// const BASE_URL = "https://5f19-171-6-156-226.ap.ngrok.io/api/v2";
+
+//dev
+// const BASE_URL = "http://localhost:4000/api/auth";
 
 
 async function goLogin(username, password) {
