@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import {
   editMember,
@@ -16,11 +16,40 @@ function Card2({ user, familyID, familyData }) {
   const [name, setName] = useState(user.name);
   const [img_src, setImg_src] = useState(user.img_src);
   const [expireDate, setExpireDate] = useState(user.expireDate);
-  const [tempExpireDate, setTempExpireDate] = useState(user.expireDate);
+  const [tempExpireDate] = useState(user.expireDate);
   const [edit, setEdit] = useState(false);
   const [prices] = useState(familyData.prices);
   const [priceIndexSelect, setPriceIndexSelect] = useState(99);
-  const [isCustomEdit, setCustomEdit] = useState(false);
+  const [status, setStatus] = useState(1);
+
+  useEffect(() => {
+    let currentDate = new Date();
+    let expireD = new Date(expireDate);
+    // let month = date.getMonth() + 1;
+    // let year = date.getFullYear() + 543;
+    // let temp = GET_DATE_FORMAT(expireDate, "noTime").split("/");
+    // if (temp[1] > month || year < temp[2]) {
+    //   setStatus("1");
+    // } else if (month.toString() === temp[1]) {
+    //   setStatus("2");
+    // } else {
+    //   setStatus("3");
+    // }
+    if (
+      (expireD.getMonth() > currentDate.getMonth() &&
+        expireD.getFullYear() === currentDate.getFullYear()) ||
+      expireD.getFullYear() > currentDate.getFullYear()
+    ) {
+      setStatus("1");
+    } else if (
+      expireD.getMonth() === currentDate.getMonth() &&
+      expireD.getFullYear() === currentDate.getFullYear()
+    ) {
+      setStatus("2");
+    } else {
+      setStatus("3");
+    }
+  }, [expireDate]);
 
   const setData = async () => {
     return await setMonthAPI({
@@ -30,28 +59,7 @@ function Card2({ user, familyID, familyData }) {
       familyID,
     });
   };
-  const getNowDate = () => {
-    let date = new Date();
-    return (
-      date.getDate() +
-      "/" +
-      (date.getMonth() + 1) +
-      "/" +
-      parseInt(date.getFullYear() + 543)
-    );
-  };
-  const pushCount = () => {
-    setMonth(month + 1);
-    let a = expireDate.split("/");
-    let int = parseInt(a[1]) + 1;
-    if (int > 12) {
-      int = 1;
-      let year = parseInt(a[2]) + 1;
-      setExpireDate(`${familyData.dueDate}/${int}/${year}`);
-      return;
-    }
-    setExpireDate(`${familyData.dueDate}/${int}/${a[2]}`);
-  };
+
   const getNewDate = (strDate, numberOfMonth) => {
     strDate = CONVERT_STR_TO_DATE_TYPE(strDate);
     setMonth(numberOfMonth);
@@ -62,53 +70,8 @@ function Card2({ user, familyID, familyData }) {
     setExpireDate(newDate);
   };
 
-  // const convertToDateType = (strDate) => {
-  //   if (strDate.length <= 12) {
-  //     strDate = strDate.split("/");
-  //     strDate = `${strDate[1]}/${strDate[0]}/${parseInt(strDate[2]) - 543}`;
-  //     return new Date(strDate);
-  //   }
-  //   return strDate
-  // };
-  // const getDateFormat = (strDate) => {
-  //   if (strDate.length <= 12) {
-  //     // convertDateType(strDate);
-  //     return strDate;
-  //   }
-  //   let date1 = new Date(strDate);
-  //   return date1.toLocaleDateString("th-TH");
-  // };
-  const pushCountPrice = (month) => {
-    setMonth(month);
-    let a = tempExpireDate.split("/");
-    let int = parseInt(a[1]);
-    let year = parseInt(a[2]);
-    let answerTemp = "";
-    for (let i = 0; i < month; i++) {
-      int = int + 1;
-      if (int > 12) {
-        int = 1;
-        year = parseInt(a[2]) + 1;
-        answerTemp = `${familyData.dueDate}/${int}/${year}`;
-      }
-      answerTemp = `${familyData.dueDate}/${int}/${year}`;
-    }
-    setExpireDate(answerTemp);
-  };
-  const deCount = () => {
-    setMonth(month - 1);
-    let a = expireDate.split("/");
-    let int = parseInt(a[1]) - 1;
-    if (int === 0) {
-      int = 12;
-      let year = parseInt(a[2]) - 1;
-      setExpireDate(`${familyData.dueDate}/${int}/${year}`);
-      return;
-    }
-    setExpireDate(`${familyData.dueDate}/${int}/${a[2]}`);
-  };
   const getDateOverdue = (oldDate) => {
-    oldDate = CONVERT_STR_TO_DATE_TYPE(oldDate)
+    oldDate = CONVERT_STR_TO_DATE_TYPE(oldDate);
     let currentDate = new Date();
 
     let diffTime = currentDate - oldDate;
@@ -120,6 +83,35 @@ function Card2({ user, familyID, familyData }) {
       return 0;
     }
   };
+
+  const status_func = (status) => {
+    switch (status) {
+      case "1":
+        return {
+          class: "w-full h-1/4 flex justify-center bg-green-500 rounded-t-lg",
+          status: "ฟังเพลงยาว ๆ ไปครับ",
+        };
+      case "2":
+        return {
+          class: "w-full h-1/4 flex justify-center bg-yellow-500 rounded-t-lg",
+          status: "ถึงเวลาจ่ายแล้วครับผมม",
+        };
+      case "3":
+        return {
+          class: "w-full h-1/4 flex justify-center bg-red-500 rounded-t-lg",
+          status: "ระวังจะได้ฟัง JOOX",
+        };
+      default:
+        return "err";
+    }
+  };
+
+  const pushNotification = (userId) => {
+    console.log("userId");
+    console.log(userId);
+    console.log(status);
+  };
+
   const save = () => {
     editMember({
       id: user._id,
@@ -139,6 +131,7 @@ function Card2({ user, familyID, familyData }) {
       }
     });
   };
+
   const confirm = (isCustom) => {
     if (isCustom) {
       Swal.fire({
@@ -229,7 +222,6 @@ function Card2({ user, familyID, familyData }) {
         } else if (result.isDenied) {
           Swal.fire("Changes are not saved", "", "info");
         }
-        // setMonth(0);
       });
     }
   };
@@ -299,9 +291,6 @@ function Card2({ user, familyID, familyData }) {
               }
               onClick={() => {
                 setPriceIndexSelect(index);
-                // setMonth(price.month);
-                // setExpireDate(tempExpireDate);
-                // pushCountPrice(price.month);
                 getNewDate(tempExpireDate, price.month, false);
               }}
               key={price._id}
@@ -316,104 +305,18 @@ function Card2({ user, familyID, familyData }) {
             ยืนยัน
           </button>
         </div>
-        {/* <button
-          className="text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-blue-500 hover:bg-blue-600"
-          onClick={() => setCustomEdit(true)}
-        >
-          กำหนดเอง
-        </button> */}
-      </div>
-    </>
-  );
-
-  const customCard = () => (
-    <>
-      <p className="text-black text-3xl">{user.name}</p>
-      <button
-        className="text-xs m-auto flex text-gray-600"
-        onClick={() => setEdit(true)}
-      >
-        แก้ไขข้อมูลส่วนตัว
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4 pl-1"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-          <path
-            fillRule="evenodd"
-            d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-      <div className="w-2/3 mx-auto my-5">
-        <div className="flex justify-between">
-          <p
-            className="text-black font-light text-left"
-            style={{ fontSize: "18px" }}
-          >
-            จ่ายล่าสุด :
-          </p>
-          <p
-            className="text-black font-light text-left"
-            style={{ fontSize: "18px" }}
-          >
-            {GET_DATE_FORMAT(user.lastDate, "noTime")}
-          </p>
-        </div>
-        <div className="flex justify-between">
-          <p
-            className="text-black font-light text-left"
-            style={{ fontSize: "18px" }}
-          >
-            หมดอายุ :
-          </p>
-          <p
-            className="text-black font-light text-left"
-            style={{ fontSize: "18px" }}
-          >
-            {GET_DATE_FORMAT(expireDate, "noTime")}
-          </p>
-        </div>
-      </div>
-      <p className="text-black text-sm text-left">เพิ่มเดือน</p>
-      <div className="flex justify-around items-center mt-3">
-        <div className="flex w-4/6">
-          <button
-            className="p-2 rounded-full w-10 h-10 text-black hover:bg-red-50"
-            onClick={() =>
-              month > 0 ? getNewDate(tempExpireDate, -1, true) : null
-            }
-          >
-            -
-          </button>
-          <p className="text-black text-sm bg-white py-2 px-4 rounded-md mx-5 w-12">
-            {month}
-          </p>
-          <button
-            className="bg-blue-600 p-2 rounded-full w-10 h-10 text-white hover:bg-blue-800"
-            onClick={() => {
-              getNewDate(tempExpireDate, 1, true);
-            }}
-          >
-            +
-          </button>
-        </div>
         <button
-          className="text-sm w-2/6 rounded-md text-white py-2 bg-green-500 hover:bg-green-600"
-          onClick={() => confirm(true)}
+          className={
+            status !== "1"
+              ? "text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-blue-500 hover:bg-blue-600"
+              : "text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-gray-500 pointer-events-none"
+          }
+          onClick={() => pushNotification(user._id)}
+          disabled={status === "1" ? "true" : ""}
         >
-          ยืนยัน
+          ส่งข้อความเรียกเก็บเงิน
         </button>
       </div>
-      <button
-        className="text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-blue-500 mt-16 hover:bg-blue-600"
-        onClick={() => setCustomEdit(false)}
-      >
-        ปิด
-      </button>
     </>
   );
 
@@ -457,7 +360,7 @@ function Card2({ user, familyID, familyData }) {
 
   return (
     <div className="h-auto w-80 bg-gray-50 rounded-lg shadow-xl ">
-      <div className="w-full h-1/4 flex justify-center bg-red-500 rounded-t-lg">
+      <div className={status_func(status).class}>
         <div
           className="rounded-full w-32 h-32 -mt-12 shadow-sm"
           style={{
