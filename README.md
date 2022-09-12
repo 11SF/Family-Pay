@@ -1,6 +1,6 @@
 # Family Pay
 
-ระบบจัดการยอดชำระเงินสำหรับหัวหน้าครอบครัวที่มีกลุ่มหารค่าบริการรายเดือนของ Spotify และ Youtube Premium ในรูปแบบ Family Plan 
+ระบบจัดการยอดชำระเงินสำหรับหัวหน้าครอบครัวที่มีกลุ่มหารค่าบริการรายเดือนของ Spotify หรือ Youtube Premium ในรูปแบบ Family Plan 
 
 ## Feature
 
@@ -20,8 +20,9 @@
  - Line Chat Bot สำหรับแจ้งเตือนสมาชิกที่ถึงกำหนดจ่ายเงิน ณ เดือนนั้นๆ เป็นข้อความแบบส่วนตัว และแจ้งเตือนเมื่อหัวหน้าครอบครัวทำการอัปเดตข้อมูลการจ่ายเงินในระบบให้แล้ว
 
 
-## Tech Stack
+## Tech Stack & Libraries
  - MERN Stack (Mongo, Express.js, React.js, node.js)
+ - Tailwind CSS
  - [Echo Framework (Log Service)](https://github.com/11SF/go-log-manager)
  - SQLite
  - JWT
