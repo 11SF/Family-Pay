@@ -9,6 +9,7 @@ import loading_icon from "../assets/bars.svg";
 import {useParams} from "react-router";
 import {fetchFamily} from "../modules/AdminService";
 import {isLogin} from "../modules/AuthService";
+import { GET_DATE_FORMAT } from "../modules/ConvertFunc";
 
 export default function SpotifyPage() {
   // const BASE_URL = "http://localhost:5000/api/v2";
@@ -43,7 +44,7 @@ export default function SpotifyPage() {
 
   useEffect(() => {
     if (prices.length !== 0) {
-      console.log(prices);
+      //console.log(prices);
       setLoading2(false);
     }
   }, [prices]);
@@ -70,8 +71,8 @@ export default function SpotifyPage() {
                 className="card"
                 name={user.name}
                 pic={user.img_src}
-                lastDate={user.lastDate}
-                expireDate={user.expireDate}
+                lastDate={GET_DATE_FORMAT(user.lastDate, "noTime")}
+                expireDate={GET_DATE_FORMAT(user.expireDate, "noTime")}
               />
             ))
           ) : (

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import {createFamily} from "../modules/AdminService";
-import {getUserData} from "../modules/AuthService";
+import {createFamily} from "../../modules/AdminService";
+import {getUserData} from "../../modules/AuthService";
 
 function AdminCreateFamily() {
   const [familyName, setFamilyName] = useState("");
@@ -122,7 +122,7 @@ function AdminCreateFamily() {
   const handleCreate = async () => {
     setLoading(true);
     let result = await createFamily(familyName, platform, dueDate, ppNumber);
-    console.log(result);
+    //console.log(result);
     if (result.status) {
       setFamilyDetail(result);
       setCreated(true);
@@ -142,7 +142,7 @@ function AdminCreateFamily() {
         <p className="text-9xl text-black">{familyDetail.data.token}</p>
       </div>
 
-      <div>
+      <div className="my-6">
         <p>รายละเอียดครอบครัว</p>
         <p>
           Email หัวหน้าครอบครัว :{" "}
@@ -159,7 +159,7 @@ function AdminCreateFamily() {
           </span>
         </p>
       </div>
-      <buttn className=" w-full bg-gray-50 p-4 rounded-lg">กลับหน้าแรก</buttn>
+      <button className=" w-full bg-gray-50 hover:bg-gray-100 p-4 rounded-lg" onClick={()=>{ window.location = "/admin/selectfamily" }}>กลับหน้าแรก</button>
     </div>
   );
   return (

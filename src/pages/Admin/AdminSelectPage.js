@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
-import {getUserData} from "../modules/AuthService";
-import {fetchFamilyByEmail} from "../modules/AdminService";
+import {getUserData} from "../../modules/AuthService";
+import {fetchFamilyByEmail} from "../../modules/AdminService";
 import {Link, Redirect} from "react-router-dom";
-import FamilyCard from "../components/selectPage/FamilyCard";
+import FamilyCard from "../../components/selectPage/FamilyCard";
 
 function AdminSelectPage() {
   const [isLoading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ function AdminSelectPage() {
     let result = await fetchFamilyByEmail(getUserData().sub);
     //   result = result.filter(value => value._id);
     setFamilies(result);
-    console.log(families);
+    //console.log(families);
     setLoading(false);
   };
 
@@ -54,7 +54,7 @@ function AdminSelectPage() {
       ) : (
         families.map((family, index) => (
           <Link
-            to={`/admin/managefamily/${family.token}`}
+            to={`/admin/${family.token}/home`}
             className="p-4 rounded-md _hover"
             key={index}
           >

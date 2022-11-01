@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import {
   editMember,
   setMonthAPI,
   pushConfirmPayment,
+  addTransaction,
 } from "../../modules/AdminService";
+import {
+  CONVERT_STR_TO_DATE_TYPE,
+  GET_DATE_FORMAT,
+} from "../../modules/ConvertFunc";
 
 function Card2({ user, familyID, familyData }) {
   const [month, setMonth] = useState(0);
@@ -15,66 +20,98 @@ function Card2({ user, familyID, familyData }) {
   const [edit, setEdit] = useState(false);
   const [prices] = useState(familyData.prices);
   const [priceIndexSelect, setPriceIndexSelect] = useState(99);
-  const [isCustomEdit, setCustomEdit] = useState(false);
+  const [status, setStatus] = useState(1);
+
+  useEffect(() => {
+    let currentDate = new Date();
+    let expireD = new Date(expireDate);
+    // let month = date.getMonth() + 1;
+    // let year = date.getFullYear() + 543;
+    // let temp = GET_DATE_FORMAT(expireDate, "noTime").split("/");
+    // if (temp[1] > month || year < temp[2]) {
+    //   setStatus("1");
+    // } else if (month.toString() === temp[1]) {
+    //   setStatus("2");
+    // } else {
+    //   setStatus("3");
+    // }
+    if (
+      (expireD.getMonth() > currentDate.getMonth() &&
+        expireD.getFullYear() === currentDate.getFullYear()) ||
+      expireD.getFullYear() > currentDate.getFullYear()
+    ) {
+      setStatus("1");
+    } else if (
+      expireD.getMonth() === currentDate.getMonth() &&
+      expireD.getFullYear() === currentDate.getFullYear()
+    ) {
+      setStatus("2");
+    } else {
+      setStatus("3");
+    }
+  }, [expireDate]);
+
   const setData = async () => {
     return await setMonthAPI({
       id: user._id,
-      lastDate: getNowDate(),
+      lastDate: CONVERT_STR_TO_DATE_TYPE(new Date().toISOString()).toISOString(),
       expireDate,
       familyID,
     });
   };
-  const getNowDate = () => {
-    let date = new Date();
-    return (
-      date.getDate() +
-      "/" +
-      (date.getMonth() + 1) +
-      "/" +
-      parseInt(date.getFullYear() + 543)
+
+  const getNewDate = (strDate, numberOfMonth) => {
+    strDate = CONVERT_STR_TO_DATE_TYPE(strDate);
+    setMonth(numberOfMonth);
+    let newDate = new Date(
+      strDate.setMonth(strDate.getMonth() + parseInt(numberOfMonth))
     );
+    newDate = new Date(strDate.setDate(familyData.dueDate));
+    setExpireDate(newDate.toISOString());
   };
-  const pushCount = () => {
-    setMonth(month + 1);
-    let a = expireDate.split("/");
-    let int = parseInt(a[1]) + 1;
-    if (int > 12) {
-      int = 1;
-      let year = parseInt(a[2]) + 1;
-      setExpireDate(`${familyData.dueDate}/${int}/${year}`);
-      return;
+
+  const getDateOverdue = (oldDate) => {
+    oldDate = CONVERT_STR_TO_DATE_TYPE(oldDate);
+    let currentDate = new Date();
+
+    let diffTime = currentDate - oldDate;
+    let diffDays = Math.ceil(diffTime / (1000 * 3600 * 24)) - 1;
+
+    if (diffDays > 0) {
+      return diffDays;
+    } else {
+      return 0;
     }
-    setExpireDate(`${familyData.dueDate}/${int}/${a[2]}`);
   };
-  const pushCountPrice = (month) => {
-    setMonth(month);
-    let a = tempExpireDate.split("/");
-    let int = parseInt(a[1]);
-    let year = parseInt(a[2]);
-    let answerTemp = "";
-    for (let i = 0; i < month; i++) {
-      int = int + 1;
-      if (int > 12) {
-        int = 1;
-        year = parseInt(a[2]) + 1;
-        answerTemp = `${familyData.dueDate}/${int}/${year}`;
-      }
-      answerTemp = `${familyData.dueDate}/${int}/${year}`;
+
+  const status_func = (status) => {
+    switch (status) {
+      case "1":
+        return {
+          class: "w-full h-1/4 flex justify-center bg-green-500 rounded-t-lg",
+          status: "ฟังเพลงยาว ๆ ไปครับ",
+        };
+      case "2":
+        return {
+          class: "w-full h-1/4 flex justify-center bg-yellow-500 rounded-t-lg",
+          status: "ถึงเวลาจ่ายแล้วครับผมม",
+        };
+      case "3":
+        return {
+          class: "w-full h-1/4 flex justify-center bg-red-500 rounded-t-lg",
+          status: "ระวังจะได้ฟัง JOOX",
+        };
+      default:
+        return "err";
     }
-    setExpireDate(answerTemp);
   };
-  const deCount = () => {
-    setMonth(month - 1);
-    let a = expireDate.split("/");
-    let int = parseInt(a[1]) - 1;
-    if (int === 0) {
-      int = 12;
-      let year = parseInt(a[2]) - 1;
-      setExpireDate(`${familyData.dueDate}/${int}/${year}`);
-      return;
-    }
-    setExpireDate(`${familyData.dueDate}/${int}/${a[2]}`);
+
+  const pushNotification = (userId) => {
+    console.log("userId");
+    console.log(userId);
+    console.log(status);
   };
+
   const save = () => {
     editMember({
       id: user._id,
@@ -94,6 +131,7 @@ function Card2({ user, familyID, familyData }) {
       }
     });
   };
+
   const confirm = (isCustom) => {
     if (isCustom) {
       Swal.fire({
@@ -106,14 +144,14 @@ function Card2({ user, familyID, familyData }) {
         if (result.isConfirmed) {
           setData().then((res) => {
             Swal.fire("ดำเนินการเรียบร้อย").then(() => {
-              console.log({
-                familyName: familyData.familyName,
-                memberName: user.name,
-                price: prices[priceIndexSelect].price,
-                month: prices[priceIndexSelect].month,
-                nextDate: expireDate,
-                alertId: user._id,
-              });
+              // //console.log({
+              //   familyName: familyData.familyName,
+              //   memberName: user.name,
+              //   price: prices[priceIndexSelect].price,
+              //   month: prices[priceIndexSelect].month,
+              //   nextDate: expireDate,
+              //   alertId: user._id,
+              // });
               pushConfirmPayment({
                 familyName: familyData.familyName,
                 memberName: user.name,
@@ -121,9 +159,21 @@ function Card2({ user, familyID, familyData }) {
                 month: prices[priceIndexSelect].month,
                 nextDate: expireDate,
                 alertId: user._id,
-              }).then((res) => {
-                // window.location.reload();
-                setMonth(0);
+              }).then(() => {
+                addTransaction({
+                  member_id: user._id,
+                  name: user.name,
+                  family_id: familyData.token,
+                  family_name: familyData.familyName,
+                  price: prices[priceIndexSelect].price,
+                  month: prices[priceIndexSelect].month,
+                  date_overdue: getDateOverdue(tempExpireDate),
+                  old_ecpire_date: CONVERT_STR_TO_DATE_TYPE(tempExpireDate),
+                  new_expire_date: expireDate,
+                }).then(() => {
+                  window.location.reload();
+                  setMonth(0);
+                });
               });
             });
           });
@@ -150,17 +200,28 @@ function Card2({ user, familyID, familyData }) {
                 month: prices[priceIndexSelect].month,
                 nextDate: expireDate,
                 alertId: user._id,
-              }).then((res) => {
-                window.location.reload();
-                setMonth(0);
-                setPriceIndexSelect(99);
+              }).then(() => {
+                addTransaction({
+                  member_id: user._id,
+                  name: user.name,
+                  family_id: familyData.token,
+                  family_name: familyData.familyName,
+                  price: prices[priceIndexSelect].price,
+                  month: prices[priceIndexSelect].month,
+                  date_overdue: getDateOverdue(tempExpireDate),
+                  old_expire_date: CONVERT_STR_TO_DATE_TYPE(tempExpireDate),
+                  new_expire_date: expireDate,
+                }).then(() => {
+                  window.location.reload();
+                  setMonth(0);
+                  setPriceIndexSelect(99);
+                });
               });
             });
           });
         } else if (result.isDenied) {
           Swal.fire("Changes are not saved", "", "info");
         }
-        // setMonth(0);
       });
     }
   };
@@ -199,7 +260,7 @@ function Card2({ user, familyID, familyData }) {
             className="text-black font-light text-left"
             style={{ fontSize: "18px" }}
           >
-            {user.lastDate}
+            {GET_DATE_FORMAT(user.lastDate, "noTime")}
           </p>
         </div>
         <div className="flex justify-between">
@@ -213,7 +274,7 @@ function Card2({ user, familyID, familyData }) {
             className="text-black font-light text-left"
             style={{ fontSize: "18px" }}
           >
-            {expireDate}
+            {GET_DATE_FORMAT(expireDate, "noTime")}
           </p>
         </div>
       </div>
@@ -230,9 +291,7 @@ function Card2({ user, familyID, familyData }) {
               }
               onClick={() => {
                 setPriceIndexSelect(index);
-                // setMonth(price.month);
-                // setExpireDate(tempExpireDate);
-                pushCountPrice(price.month);
+                getNewDate(tempExpireDate, price.month, false);
               }}
               key={price._id}
             >
@@ -241,105 +300,23 @@ function Card2({ user, familyID, familyData }) {
           ))}
           <button
             className="text-sm rounded-md text-white py-2 bg-green-500  hover:bg-green-600"
-            onClick={() => confirm(false)}
+            onClick={() => (priceIndexSelect !== 99 ? confirm(false) : null)}
           >
             ยืนยัน
           </button>
         </div>
-        <button
-          className="text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-blue-500 hover:bg-blue-600"
-          onClick={() => setCustomEdit(true)}
+        {/* <button
+          className={
+            status !== "1"
+              ? "text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-blue-500 hover:bg-blue-600"
+              : "text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-gray-500 pointer-events-none"
+          }
+          onClick={() => pushNotification(user._id)}
+          disabled={status === "1" ? "true" : ""}
         >
-          กำหนดเอง
-        </button>
+          ส่งข้อความเรียกเก็บเงิน
+        </button> */}
       </div>
-    </>
-  );
-
-  const customCard = () => (
-    <>
-      <p className="text-black text-3xl">{user.name}</p>
-      <button
-        className="text-xs m-auto flex text-gray-600"
-        onClick={() => setEdit(true)}
-      >
-        แก้ไขข้อมูลส่วนตัว
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-4 w-4 pl-1"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
-          <path
-            fillRule="evenodd"
-            d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-      <div className="w-2/3 mx-auto my-5">
-        <div className="flex justify-between">
-          <p
-            className="text-black font-light text-left"
-            style={{ fontSize: "18px" }}
-          >
-            จ่ายล่าสุด :
-          </p>
-          <p
-            className="text-black font-light text-left"
-            style={{ fontSize: "18px" }}
-          >
-            {user.lastDate}
-          </p>
-        </div>
-        <div className="flex justify-between">
-          <p
-            className="text-black font-light text-left"
-            style={{ fontSize: "18px" }}
-          >
-            หมดอายุ :
-          </p>
-          <p
-            className="text-black font-light text-left"
-            style={{ fontSize: "18px" }}
-          >
-            {expireDate}
-          </p>
-        </div>
-      </div>
-      <p className="text-black text-sm text-left">เพิ่มเดือน</p>
-      <div className="flex justify-around items-center mt-3">
-        <div className="flex w-4/6">
-          <button
-            className="p-2 rounded-full w-10 h-10 text-black hover:bg-red-50"
-            onClick={() => (month > 0 ? deCount() : null)}
-          >
-            -
-          </button>
-          <p className="text-black text-sm bg-white py-2 px-4 rounded-md mx-5 w-12">
-            {month}
-          </p>
-          <button
-            className="bg-blue-600 p-2 rounded-full w-10 h-10 text-white hover:bg-blue-800"
-            onClick={() => pushCount()}
-          >
-            +
-          </button>
-        </div>
-        <button
-          className="text-sm w-2/6 rounded-md text-white py-2 bg-green-500 hover:bg-green-600"
-          onClick={() => confirm(true)}
-        >
-          ยืนยัน
-        </button>
-      </div>
-      <button
-        className="text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-blue-500 mt-16 hover:bg-blue-600"
-        onClick={() => setCustomEdit(false)}
-      >
-        ปิด
-      </button>
     </>
   );
 
@@ -383,7 +360,7 @@ function Card2({ user, familyID, familyData }) {
 
   return (
     <div className="h-auto w-80 bg-gray-50 rounded-lg shadow-xl ">
-      <div className="w-full h-1/4 flex justify-center bg-red-500 rounded-t-lg">
+      <div className={status_func(status).class}>
         <div
           className="rounded-full w-32 h-32 -mt-12 shadow-sm"
           style={{
@@ -394,7 +371,8 @@ function Card2({ user, familyID, familyData }) {
         />
       </div>
       <div className="p-3">
-        {!edit ? (isCustomEdit ? customCard() : normalCard()) : editCard()}
+        {!edit ? normalCard() : editCard()}
+        {/* {!edit ? (isCustomEdit ? customCard() : normalCard()) : editCard()} */}
       </div>
     </div>
   );

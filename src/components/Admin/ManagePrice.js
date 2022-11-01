@@ -80,7 +80,7 @@ function ManagePrice({familyData}) {
           setPrice(prices[index].price);
           setMonth(prices[index].month);
           setImg_src(prices[index].img_src);
-          console.log(index);
+          //console.log(index);
         }}
       >
         แก้ไข
@@ -181,7 +181,7 @@ function ManagePrice({familyData}) {
           <div className="w-1/2 flex justify-end mx-auto">
             <button onClick={() => setAddPrice(true)}>เพิ่ม</button>
           </div>
-          <div className="bg-gray-200 w-1/2 h-auto mx-auto mt-3 rounded-md p-4">
+          <div className="bg-gray-100 w-1/2 h-auto mx-auto mt-3 rounded-md p-4">
             {prices.length !== 0 ? (
               prices.map((data, index) => listPanel(data, index))
             ) : (
@@ -193,7 +193,7 @@ function ManagePrice({familyData}) {
     }
   };
   return (
-    <div className="container flex flex-col">
+    <div className="container flex flex-col mt-12">
       <div className="w-full">
         <p className="text-black text-5xl py-10">ข้อมูลราคา</p>
       </div>

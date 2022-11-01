@@ -11,6 +11,8 @@ export default function Card({ name,pic,lastDate,expireDate }) {
         let month = date.getMonth() + 1;
         let year = date.getFullYear() + 543;
         let temp  = expireDate.split("/");
+        console.log(expireDate);
+        console.log(temp);
         if (temp[1] > month || year < temp[2]) {
             setStatus('1');
         } else if (month.valueOf(temp[1])) {
