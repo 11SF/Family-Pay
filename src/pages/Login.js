@@ -1,8 +1,9 @@
-import React, {useState} from "react";
-import {Link} from "react-router-dom";
-import {goLogin} from "../modules/AuthService";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { goLogin } from "../modules/AuthService";
 import loading_admin from "../assets/loading_admin.svg";
 import "./Login.css";
+import { VERSION } from "../WebVersion";
 
 function Login() {
   const [email, setEmail] = useState(null);
@@ -11,10 +12,10 @@ function Login() {
   const [msg, setMsg] = useState(null);
   // const [data, setData] = useState(null);
 
-  const handleEmail = e => {
+  const handleEmail = (e) => {
     setEmail(e.target.value);
   };
-  const handlePassword = e => {
+  const handlePassword = (e) => {
     setPassword(e.target.value);
   };
 
@@ -25,7 +26,7 @@ function Login() {
     } else {
       setLoading(true);
 
-      goLogin(email, password).then(res => {
+      goLogin(email, password).then((res) => {
         setLoading(false);
         // //console.log(res);
         if (res) {
@@ -84,6 +85,11 @@ function Login() {
               </form>
             </>
           )}
+        </div>
+        <div className="absolute right-0 bottom-0 p-5 text-right">
+          <p className="text-xs font-light">WEB Version: {VERSION["Web-Version"]} | API Version: 2.0.0 | LOG Version: 1.0.0</p>
+          {/* <p className="text-xs font-light">API Version: 2.0.0</p>
+          <p className="text-xs font-light">LOG Version: 1.0.0</p> */}
         </div>
       </div>
     </div>
