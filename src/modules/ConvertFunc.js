@@ -23,7 +23,9 @@ const CONVERT_STR_TO_DATE_TYPE = (strDate) => {
     strDate = `${strDate[1]}/${strDate[0]}/${parseInt(strDate[2]) - 543}`;
     return new Date(strDate);
   }
-  return new Date(strDate);
+  let d = new Date(strDate);
+  d.setHours(7, 0, 0, 0);
+  return d;
 };
 
 export { GET_DATE_FORMAT, CONVERT_STR_TO_DATE_TYPE };

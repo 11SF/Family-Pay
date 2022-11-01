@@ -54,7 +54,7 @@ function Card2({ user, familyID, familyData }) {
   const setData = async () => {
     return await setMonthAPI({
       id: user._id,
-      lastDate: new Date(),
+      lastDate: CONVERT_STR_TO_DATE_TYPE(new Date().toISOString()).toISOString(),
       expireDate,
       familyID,
     });
@@ -67,7 +67,7 @@ function Card2({ user, familyID, familyData }) {
       strDate.setMonth(strDate.getMonth() + parseInt(numberOfMonth))
     );
     newDate = new Date(strDate.setDate(familyData.dueDate));
-    setExpireDate(newDate);
+    setExpireDate(newDate.toISOString());
   };
 
   const getDateOverdue = (oldDate) => {
@@ -305,7 +305,7 @@ function Card2({ user, familyID, familyData }) {
             ยืนยัน
           </button>
         </div>
-        <button
+        {/* <button
           className={
             status !== "1"
               ? "text-sm rounded-md text-white w-full my-3 py-2 px-4 bg-blue-500 hover:bg-blue-600"
@@ -315,7 +315,7 @@ function Card2({ user, familyID, familyData }) {
           disabled={status === "1" ? "true" : ""}
         >
           ส่งข้อความเรียกเก็บเงิน
-        </button>
+        </button> */}
       </div>
     </>
   );
