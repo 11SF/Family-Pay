@@ -3,15 +3,8 @@ import ForbiddenPage from "../pages/ForbiddenPage";
 import { getHeaderAuth, getUserData } from "./AuthService";
 
 //Production
-const BASE_URL = "https://cloud.11sf.site/api/v2";
-const BASE_URL_LOG_SERVER = "https://cloud.11sf.site/fp";
-
-//Backup Production
-// const BASE_URL = "https://mysitebackend.herokuapp.com/api/v2";
-
-//dev
-// const BASE_URL = "http://localhost:4000/api/v2";
-// const BASE_URL_LOG_SERVER = "http://localhost:8080/fp";
+const BASE_URL = "https://cloud.nsfolk.site/api/v2";
+const BASE_URL_LOG_SERVER = "https://cloud.nsfolk.site/fp";
 
 const fetchFamily = async (token) => {
   // let payload = {
