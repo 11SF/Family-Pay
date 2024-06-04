@@ -2,7 +2,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 
 //Production
-const BASE_URL = "https://cloud.nsfolk.site/api/auth";
+const BASE_URL = "https://family-pay-api-prod.nsfolk.info/api/auth";
 
 async function goLogin(username, password) {
   try {

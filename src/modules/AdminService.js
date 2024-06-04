@@ -3,8 +3,8 @@ import ForbiddenPage from "../pages/ForbiddenPage";
 import { getHeaderAuth, getUserData } from "./AuthService";
 
 //Production
-const BASE_URL = "https://cloud.nsfolk.site/api/v2";
-const BASE_URL_LOG_SERVER = "https://cloud.nsfolk.site/fp";
+const BASE_URL = "https://family-pay-api-prod.nsfolk.info/api/v2";
+const BASE_URL_LOG_SERVER = "https://family-pay-api-prod.nsfolk.info/fp";
 
 const fetchFamily = async (token) => {
   // let payload = {
